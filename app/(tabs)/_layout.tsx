@@ -20,7 +20,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].primary,
+        tabBarActiveTintColor: Colors[colorScheme ?? "light"].secondary,
         headerShown: useClientOnlyValue(false, true),
       }}
     >

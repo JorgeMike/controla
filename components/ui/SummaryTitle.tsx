@@ -6,6 +6,7 @@ import { Text, textVariants, View } from "../Themed";
 
 export interface SummaryTitleProps {
   theme: "light" | "dark";
+  style?: React.ComponentProps<typeof View>["style"];
 
   title: string;
   amount: string;
@@ -24,18 +25,21 @@ export default function SummaryTitle({
   iconColor = Colors[theme].text,
   titleType = "h6",
   amountType = "h3",
+  style,
 }: SummaryTitleProps) {
   return (
     <View
-      style={{
-        marginTop: 20,
-        borderRadius: 20,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 15,
-      }}
+      style={[
+        {
+          borderRadius: 20,
+          paddingVertical: 10,
+          paddingHorizontal: 15,
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 15,
+        },
+        style,
+      ]}
     >
       <DefaultView
         style={{

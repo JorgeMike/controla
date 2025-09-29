@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import Colors from "@/constants/Colors";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import React from "react";
 import { StyleSheet } from "react-native";
@@ -11,7 +12,12 @@ export default function ExpenseIncomeSummary() {
   return (
     <Container style={styles.container}>
       {/* Gastos */}
-      <Actionbutton title="Agregar Gastos" iconName="cash" theme={theme} />
+      <Actionbutton
+        title="Agregar Gastos"
+        iconName="cash"
+        theme={theme}
+        iconColor={Colors[theme].warning}
+      />
 
       {/* Separador */}
       <View
@@ -24,7 +30,12 @@ export default function ExpenseIncomeSummary() {
         ]}
       />
 
-      <Actionbutton title="Agregar Ingresos" iconName="cash" theme={theme} />
+      <Actionbutton
+        title="Agregar Ingresos"
+        iconName="cash"
+        theme={theme}
+        iconColor={Colors[theme].warning}
+      />
     </Container>
   );
 }

@@ -5,18 +5,14 @@ import { Text } from "./Themed";
 export default function Greetings() {
   return (
     <DefaultView>
-      <Text type="h1" style={{ marginTop: 25 }} lightColor="#ffffff">
+      <Text type="h1" style={{ marginTop: 25 }}>
         ¡Hola,{" "}
-        <Text type="h1" style={{ fontWeight: "800" }} lightColor="#ffffff">
+        <Text type="h1" style={{ fontWeight: "800" }}>
           Michael
         </Text>
         !
       </Text>
-      <Text
-        type="defaultSemiBold"
-        style={{ marginTop: 5, opacity: 0.9 }}
-        lightColor="#ffffff"
-      >
+      <Text type="defaultSemiBold" style={{ marginTop: 5, opacity: 0.9 }}>
         Este es tu resumen de {DateUtils.getActualMonthName()}.
       </Text>
     </DefaultView>

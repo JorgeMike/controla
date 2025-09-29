@@ -12,9 +12,9 @@ export default {
     info: "#FFEB3B",
 
     // Tokens de superficie
-    background: "#ffffff",
-    text: "#000000",
-    surface: "#f5f5f5",
+    background: "#efeef3",
+    text: "#28272c",
+    surface: "#ffffffff",
     surfaceVariant: "#e8e8e8",
 
     // Tokens de contenido
@@ -34,9 +34,9 @@ export default {
     danger: "#EF5350",
     info: "#FFF176",
 
-    background: "#242424",
+    background: "#17161b",
     text: "#ffffff",
-    surface: "#1e1e1e",
+    surface: "#28272c",
     surfaceVariant: "#2a2a2a",
 
     onBackground: "#fff",
