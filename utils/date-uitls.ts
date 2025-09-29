@@ -5,37 +5,39 @@ type DateFormatOptions = {
   showYear?: boolean;
 };
 
-const DateUtils = {
-  formatDate(
+class DateUtils {
+  private static readonly months = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  private static readonly weekdays = [
+    "Domingo",
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+  ];
+
+  static formatDate(
     date: Date,
     options: DateFormatOptions = { showDay: true, showMonth: true }
   ): string {
-    const months = [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
-    ];
-    const weekdays = [
-      "Domingo",
-      "Lunes",
-      "Martes",
-      "Miércoles",
-      "Jueves",
-      "Viernes",
-      "Sábado",
-    ];
     const day = date.getDate();
-    const weekday = weekdays[date.getDay()];
-    const month = months[date.getMonth()];
+    const weekday = this.weekdays[date.getDay()];
+    const month = this.months[date.getMonth()];
     const year = date.getFullYear();
 
     let parts: string[] = [];
@@ -46,7 +48,12 @@ const DateUtils = {
     if (options.showYear) parts.push(`de ${year}`);
 
     return parts.join(", ").replace(", de", " de");
-  },
-};
+  }
+
+  static getActualMonthName(): string {
+    const date = new Date();
+    return this.months[date.getMonth()];
+  }
+}
 
 export default DateUtils;
