@@ -2,28 +2,40 @@ import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { View as DefaultView, Pressable, StyleSheet } from "react-native";
-import { Text, View } from "../Themed";
+import { Text, textVariants, View } from "../Themed";
 
 export interface ActionbuttonProps {
   theme: "light" | "dark";
+
+  title: string;
+  titleType?: keyof typeof textVariants;
+
+  iconName?: React.ComponentProps<typeof Ionicons>["name"];
+  iconColor?: string;
 }
 
-export default function Actionbutton({ theme }: ActionbuttonProps) {
+export default function Actionbutton({
+  theme,
+  title,
+  titleType = "h5",
+  iconName = "wallet",
+  iconColor = Colors[theme].text,
+}: ActionbuttonProps) {
   return (
     <Pressable style={styles.summaryCard}>
       {({ pressed }) => (
-        <View style={[styles.cardContent, { opacity: pressed ? 0.7 : 1 }]}>
+        <View style={[styles.cardContent, { opacity: pressed ? 0.8 : 1 }]}>
           <DefaultView
             style={{
-              backgroundColor: Colors[theme].text + "25",
+              backgroundColor: iconColor + "25",
               padding: 8,
               borderRadius: 50,
               marginBottom: 8,
             }}
           >
-            <Ionicons name="wallet" size={20} color={Colors[theme].text} />
+            <Ionicons name={iconName} size={20} color={iconColor} />
           </DefaultView>
-          <Text type="h5">Agregar Gastos</Text>
+          <Text type={titleType}>{title}</Text>
         </View>
       )}
     </Pressable>

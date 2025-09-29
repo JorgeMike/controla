@@ -2,13 +2,18 @@ import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { View as DefaultView } from "react-native";
-import { Text, View } from "../Themed";
+import { Text, textVariants, View } from "../Themed";
 
 export interface SummaryTitleProps {
   theme: "light" | "dark";
+
   title: string;
   amount: string;
+  titleType?: keyof typeof textVariants;
+  amountType?: keyof typeof textVariants;
+
   iconName?: React.ComponentProps<typeof Ionicons>["name"];
+  iconColor?: string;
 }
 
 export default function SummaryTitle({
@@ -16,6 +21,9 @@ export default function SummaryTitle({
   title,
   amount,
   iconName = "wallet",
+  iconColor = Colors[theme].secondary,
+  titleType = "h6",
+  amountType = "h3",
 }: SummaryTitleProps) {
   return (
     <View
@@ -31,18 +39,18 @@ export default function SummaryTitle({
     >
       <DefaultView
         style={{
-          backgroundColor: Colors[theme].secondary + "25",
+          backgroundColor: iconColor + "25",
           padding: 8,
           borderRadius: 10,
         }}
       >
-        <Ionicons name={iconName} size={20} color={Colors[theme].secondary} />
+        <Ionicons name={iconName} size={20} color={iconColor} />
       </DefaultView>
       <DefaultView>
-        <Text type="h6" style={{ color: Colors[theme].secondary }}>
+        <Text type={titleType} style={{ color: iconColor }}>
           {title}
         </Text>
-        <Text type="h3">{amount}</Text>
+        <Text type={amountType}>{amount}</Text>
       </DefaultView>
     </View>
   );

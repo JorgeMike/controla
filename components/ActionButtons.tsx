@@ -10,7 +10,7 @@ export default function ExpenseIncomeSummary() {
   return (
     <Container style={styles.container}>
       {/* Gastos */}
-      <Actionbutton theme={theme} />
+      <Actionbutton title="Agregar Gastos" iconName="cash" theme={theme} />
 
       {/* Separador */}
       <View
@@ -23,7 +23,7 @@ export default function ExpenseIncomeSummary() {
         ]}
       />
 
-      <Actionbutton theme={theme} />
+      <Actionbutton title="Agregar Ingresos" iconName="cash" theme={theme} />
     </Container>
   );
 }

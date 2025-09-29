@@ -1,6 +1,6 @@
 import { StyleSheet, useColorScheme } from "react-native";
 
-import ExpenseIncomeSummary from "@/components/ActionButtons";
+import ActionButtons from "@/components/ActionButtons";
 import Container from "@/components/Container";
 import Greetings from "@/components/Greetings";
 import Header from "@/components/Header";
@@ -29,7 +29,7 @@ export default function HomeScreen() {
         <SummaryTitle theme={theme} title="Total" amount="$15,130.15" />
       </Container>
 
-      <ExpenseIncomeSummary />
+      <ActionButtons />
     </LinearGradient>
   );
 }
