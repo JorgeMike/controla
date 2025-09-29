@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, useColorScheme } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
 import ActionButtons from "@/components/ActionButtons";
 import Container from "@/components/Container";
@@ -7,12 +7,13 @@ import Header from "@/components/Header";
 import { Text } from "@/components/Themed";
 import SummaryTitle from "@/components/ui/SummaryTitle";
 import Colors from "@/constants/Colors";
+import { useAppTheme } from "@/contexts/ThemeContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
-  const theme = useColorScheme() ?? "light";
+  const { theme } = useAppTheme() ?? "light";
 
   return (
     <LinearGradient
@@ -40,7 +41,9 @@ export default function HomeScreen() {
         <ActionButtons />
 
         <Container>
-          <Text type="h3">Últimos Movimientos</Text>
+          <Text type="h3" lightColor="#ffffff">
+            Últimos Movimientos
+          </Text>
           <SummaryTitle
             theme={theme}
             iconName="cash"

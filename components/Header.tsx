@@ -27,7 +27,7 @@ export default function Header({ theme }: { theme: "light" | "dark" }) {
           shadowOffset: { width: 0, height: 2 },
         }}
       >
-        <Text type="defaultSemiBold">
+        <Text lightColor="#ffffff" type="defaultSemiBold">
           {DateUtils.formatDate(new Date(), {
             showDay: true,
             showMonth: true,
@@ -44,7 +44,7 @@ export default function Header({ theme }: { theme: "light" | "dark" }) {
                 style={{
                   marginRight: 12,
                   opacity: pressed ? 0.5 : 1,
-                  color: Colors[theme].text,
+                  color: "#ffffff",
                 }}
               />
             )}

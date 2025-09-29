@@ -1,11 +1,12 @@
 import Container from "@/components/Container";
+import { useAppTheme } from "@/contexts/ThemeContext";
 import React from "react";
-import { StyleSheet, useColorScheme } from "react-native";
+import { StyleSheet } from "react-native";
 import { View } from "./Themed";
 import Actionbutton from "./ui/Actionbutton";
 
 export default function ExpenseIncomeSummary() {
-  const theme = useColorScheme() ?? "light";
+  const { theme } = useAppTheme() ?? "light";
 
   return (
     <Container style={styles.container}>

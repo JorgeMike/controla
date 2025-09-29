@@ -4,7 +4,7 @@ const tintColorDark = "#fff";
 export default {
   light: {
     // Tokens semánticos
-    primary: "#6A1B9A",
+    primary: "#9C27B0",
     secondary: "#4A90E2",
     success: "#4CAF50",
     warning: "#FF9800",
@@ -12,8 +12,8 @@ export default {
     info: "#FFEB3B",
 
     // Tokens de superficie
-    background: "#fff",
-    text: "#000",
+    background: "#ffffff",
+    text: "#000000",
     surface: "#f5f5f5",
     surfaceVariant: "#e8e8e8",
 
