@@ -21,7 +21,7 @@ export default function SummaryTitle({
   title,
   amount,
   iconName = "wallet",
-  iconColor = Colors[theme].secondary,
+  iconColor = Colors[theme].text,
   titleType = "h6",
   amountType = "h3",
 }: SummaryTitleProps) {
