@@ -1,6 +1,7 @@
 import { Text, View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
 import { useAppTheme } from "@/contexts/ThemeContext";
+import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import { Dimensions, Image, StyleSheet, TouchableOpacity } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
@@ -35,6 +36,7 @@ const CAROUSEL_DATA = [
 
 export default function OnboardingScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const { theme } = useAppTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef<ICarouselInstance>(null);
@@ -51,9 +53,7 @@ export default function OnboardingScreen() {
 
   const handleStart = () => {
     console.log("Comenzar - Navegar a la app principal");
-    // Aquí puedes agregar la navegación, por ejemplo:
-    // router.replace('/(tabs)');
-    // O guardar en AsyncStorage que ya completó el onboarding
+    router.replace("/(onboarding)/onboarding-form");
   };
 
   const renderItem = ({ item }: { item: (typeof CAROUSEL_DATA)[0] }) => (

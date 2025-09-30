@@ -1,6 +1,6 @@
 import { ONBOARDING_KEY } from "@/constants/keys";
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
-import { initDatabase } from "@/database/database";
+import { clearDatabase } from "@/database/database";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -49,7 +49,8 @@ export default function RootLayout() {
   useEffect(() => {
     const setupDatabase = async () => {
       try {
-        await initDatabase();
+        // await initDatabase();
+        await clearDatabase();
         setAppState((prev) => ({ ...prev, dbInitialized: true }));
       } catch (error) {
         console.error("Error setting up database:", error);

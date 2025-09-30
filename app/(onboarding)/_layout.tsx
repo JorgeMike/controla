@@ -9,7 +9,7 @@ export default function OnboardingLayout() {
       }}
     >
       <Stack.Screen name="index" />
-      <Stack.Screen name="welcome-form" />
+      <Stack.Screen name="onboarding-form" />
     </Stack>
   );
 }
