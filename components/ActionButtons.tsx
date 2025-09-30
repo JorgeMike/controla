@@ -4,7 +4,7 @@ import { useAppTheme } from "@/contexts/ThemeContext";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { View } from "./Themed";
-import Actionbutton from "./ui/Actionbutton";
+import Actionbutton from "./ui/ActionButton";
 
 export default function ExpenseIncomeSummary() {
   const { theme } = useAppTheme() ?? "light";
@@ -17,6 +17,9 @@ export default function ExpenseIncomeSummary() {
         iconName="cash"
         theme={theme}
         iconColor={Colors[theme].warning}
+        onPress={() => {
+          console.log("Agregar Gastos");
+        }}
       />
 
       {/* Separador */}
@@ -24,8 +27,7 @@ export default function ExpenseIncomeSummary() {
         style={[
           styles.divider,
           {
-            backgroundColor:
-              theme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
+            backgroundColor: Colors[theme].text + "20",
           },
         ]}
       />
@@ -35,6 +37,9 @@ export default function ExpenseIncomeSummary() {
         iconName="cash"
         theme={theme}
         iconColor={Colors[theme].warning}
+        onPress={() => {
+          console.log("Agregar Ingresos");
+        }}
       />
     </Container>
   );

@@ -58,7 +58,7 @@ export default function ModalSelect<T extends string | number = string>({
             <Ionicons
               name={selectedOption.icon}
               size={20}
-              color="#666"
+              color={Colors[theme].text}
               style={styles.iconMargin}
             />
           )}
@@ -66,7 +66,7 @@ export default function ModalSelect<T extends string | number = string>({
             {selectedOption?.label || placeholder}
           </Text>
         </View>
-        <Ionicons name="chevron-down" size={20} color="#666" />
+        <Ionicons name="chevron-down" size={20} color={Colors[theme].text} />
       </TouchableOpacity>
 
       <Modal

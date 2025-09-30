@@ -61,7 +61,11 @@ function RootLayoutNav() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="profile"
-          options={{ presentation: "modal", headerTitle: "Profile" }}
+          options={{ presentation: "modal", headerTitle: "Perfil" }}
+        />
+        <Stack.Screen
+          name="add-expense"
+          options={{ headerTitle: "Agregar Gasto" }}
         />
       </Stack>
       <StatusBar style={theme === "dark" ? "light" : "dark"} />

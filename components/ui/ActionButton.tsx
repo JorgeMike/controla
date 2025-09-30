@@ -9,6 +9,7 @@ export interface ActionbuttonProps {
 
   title: string;
   titleType?: keyof typeof textVariants;
+  onPress: () => void;
 
   iconName?: React.ComponentProps<typeof Ionicons>["name"];
   iconColor?: string;
@@ -17,12 +18,13 @@ export interface ActionbuttonProps {
 export default function Actionbutton({
   theme,
   title,
+  onPress,
   titleType = "h5",
   iconName = "wallet",
   iconColor = Colors[theme].text,
 }: ActionbuttonProps) {
   return (
-    <Pressable style={styles.summaryCard}>
+    <Pressable style={styles.summaryCard} onPress={onPress}>
       {({ pressed }) => (
         <View style={[styles.cardContent, { opacity: pressed ? 0.8 : 1 }]}>
           <DefaultView
