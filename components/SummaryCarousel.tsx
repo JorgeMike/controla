@@ -1,10 +1,9 @@
 import SummaryTitle from "@/components/ui/SummaryTitle";
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
-import Carousel, { Pagination } from "react-native-reanimated-carousel";
+import Carousel from "react-native-reanimated-carousel";
 
 export interface SummaryItem {
   title: string;
@@ -21,7 +20,7 @@ interface SummaryCarouselProps {
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const SummaryCarousel: React.FC<SummaryCarouselProps> = ({ theme, data }) => {
-  const progress = useSharedValue<number>(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   return (
     <View style={styles.container}>
@@ -37,7 +36,7 @@ const SummaryCarousel: React.FC<SummaryCarouselProps> = ({ theme, data }) => {
           parallaxScrollingScale: 0.9,
           parallaxScrollingOffset: 50,
         }}
-        onProgressChange={progress}
+        onSnapToItem={(index) => setCurrentIndex(index)}
         renderItem={({ item }) => (
           <View style={styles.carouselItem}>
             <SummaryTitle
@@ -52,18 +51,23 @@ const SummaryCarousel: React.FC<SummaryCarouselProps> = ({ theme, data }) => {
         )}
       />
 
-      <Pagination.Basic
-        progress={progress}
-        data={data}
-        dotStyle={{
-          backgroundColor: Colors[theme].text + "40",
-          borderRadius: 50,
-        }}
-        activeDotStyle={{
-          backgroundColor: Colors[theme].text,
-        }}
-        containerStyle={{ gap: 5 }}
-      />
+      {/* Paginación custom sin warnings */}
+      <View style={styles.pagination}>
+        {data.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.dot,
+              {
+                backgroundColor:
+                  index === currentIndex
+                    ? Colors[theme].text
+                    : Colors[theme].text + "40",
+              },
+            ]}
+          />
+        ))}
+      </View>
     </View>
   );
 };
@@ -79,11 +83,11 @@ const styles = StyleSheet.create({
   pagination: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 8,
+    gap: 5,
   },
   dot: {
-    width: 8,
-    height: 8,
+    width: 7,
+    height: 7,
     borderRadius: 4,
   },
 });
