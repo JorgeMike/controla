@@ -1,23 +1,26 @@
 // components/ThemeToggle.tsx
-import { useAppTheme } from "@/contexts/ThemeContext";
-import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { ThemeType, useAppTheme } from "@/contexts/ThemeContext";
+import { StyleSheet } from "react-native";
+import ModalSelect, { ModalSelectOption } from "./ModalSelect";
 
 export default function ThemeToggle() {
-  const { theme, toggleTheme } = useAppTheme();
+  const { theme, setThemeMode } = useAppTheme();
+
+  const themes: ModalSelectOption<ThemeType>[] = [
+    { label: "Claro", value: "light", icon: "sunny" },
+    { label: "Oscuro", value: "dark", icon: "moon" },
+    { label: "Sistema", value: "auto", icon: "settings" },
+  ];
 
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={toggleTheme}
-      activeOpacity={0.7}
-    >
-      <Ionicons
-        name={theme === "dark" ? "sunny" : "moon"}
-        size={24}
-        color={theme === "dark" ? "#FFD700" : "#4A5568"}
-      />
-    </TouchableOpacity>
+    <ModalSelect
+      label="Tema"
+      theme={theme}
+      options={themes}
+      selectedValue={theme}
+      onValueChange={setThemeMode}
+      placeholder="Selecciona un tema"
+    />
   );
 }
 

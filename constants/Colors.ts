@@ -15,7 +15,7 @@ export default {
     background: "#efeef3",
     text: "#28272c",
     surface: "#ffffffff",
-    surfaceVariant: "#e8e8e8",
+    surfaceVariant: "#ddddddff",
 
     // Estados
     disabled: "#ccc",
