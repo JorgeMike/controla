@@ -13,11 +13,14 @@ export default function TabTwoScreen() {
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      style={{
+        flex: 1,
+        backgroundColor: Colors[theme].background, // Mover aquí
+      }}
       contentContainerStyle={{
+        flexGrow: 1, // Cambiar de paddingTop a flexGrow
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: Colors[theme].background,
       }}
       showsVerticalScrollIndicator={false}
     >
