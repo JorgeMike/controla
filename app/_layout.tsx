@@ -10,6 +10,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 
 export { ErrorBoundary } from "expo-router";
@@ -57,17 +58,19 @@ function RootLayoutNav() {
     <NavigationThemeProvider
       value={theme === "dark" ? DarkTheme : DefaultTheme}
     >
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="profile"
-          options={{ presentation: "modal", headerTitle: "Perfil" }}
-        />
-        <Stack.Screen
-          name="add-expense"
-          options={{ headerTitle: "Agregar Gasto" }}
-        />
-      </Stack>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="profile"
+            options={{ presentation: "modal", headerTitle: "Perfil" }}
+          />
+          <Stack.Screen
+            name="add-expense"
+            options={{ headerTitle: "Agregar Gasto" }}
+          />
+        </Stack>
+      </GestureHandlerRootView>
       <StatusBar style={theme === "dark" ? "light" : "dark"} />
     </NavigationThemeProvider>
   );
