@@ -16,7 +16,7 @@ export default function ExpenseIncomeSummary() {
         title="Agregar Gastos"
         iconName="cash"
         theme={theme}
-        iconColor={Colors[theme].warning}
+        iconColor={Colors[theme].orange}
         onPress={() => {
           console.log("Agregar Gastos");
         }}
@@ -36,7 +36,7 @@ export default function ExpenseIncomeSummary() {
         title="Agregar Ingresos"
         iconName="cash"
         theme={theme}
-        iconColor={Colors[theme].warning}
+        iconColor={Colors[theme].orange}
         onPress={() => {
           console.log("Agregar Ingresos");
         }}

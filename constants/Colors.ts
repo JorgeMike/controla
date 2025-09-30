@@ -4,12 +4,12 @@ const tintColorDark = "#fff";
 export default {
   light: {
     // Tokens semánticos
-    primary: "#9C27B0",
-    secondary: "#4A90E2",
-    success: "#4CAF50",
-    warning: "#FF9800",
-    danger: "#F44336",
-    info: "#FFEB3B",
+    purple: "#9C27B0",
+    blue: "#4A90E2",
+    green: "#4CAF50",
+    orange: "#FF9800",
+    red: "#F44336",
+    yellow: "#FFEB3B",
 
     // Tokens de superficie
     background: "#efeef3",
@@ -22,12 +22,12 @@ export default {
     placeholder: "#999",
   },
   dark: {
-    primary: "#9C27B0",
-    secondary: "#5BA3F5",
-    success: "#66BB6A",
-    warning: "#FFB74D",
-    danger: "#EF5350",
-    info: "#FFF176",
+    purple: "#9C27B0",
+    blue: "#5BA3F5",
+    green: "#66BB6A",
+    orange: "#FFB74D",
+    red: "#EF5350",
+    yellow: "#FFF176",
 
     background: "#17161b",
     text: "#ffffff",

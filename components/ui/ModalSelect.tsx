@@ -118,7 +118,7 @@ export default function ModalSelect<T extends string | number = string>({
                       size={24}
                       color={
                         item.value === selectedValue
-                          ? Colors[theme].secondary
+                          ? Colors[theme].blue
                           : Colors[theme].text
                       }
                       style={styles.optionIcon}
@@ -128,7 +128,7 @@ export default function ModalSelect<T extends string | number = string>({
                     style={[
                       styles.optionText,
                       item.value === selectedValue && {
-                        color: Colors[theme].secondary,
+                        color: Colors[theme].blue,
                       },
                     ]}
                   >
@@ -138,7 +138,7 @@ export default function ModalSelect<T extends string | number = string>({
                     <Ionicons
                       name="checkmark"
                       size={24}
-                      color={Colors[theme].secondary}
+                      color={Colors[theme].blue}
                     />
                   )}
                 </TouchableOpacity>

@@ -21,29 +21,32 @@ export default function HomeScreen() {
       title: "Total",
       amount: "$15,130.15",
       iconName: "wallet",
-      iconColor: Colors[theme].secondary,
+      iconColor: Colors[theme].blue,
     },
     {
       title: "Ingresos del Mes",
       amount: "$8,500.00",
       iconName: "trending-up",
-      iconColor: Colors[theme].success,
+      iconColor: Colors[theme].green,
     },
     {
       title: "Gastos del Mes",
       amount: "$3,250.00",
       iconName: "trending-down",
-      iconColor: Colors[theme].danger,
+      iconColor: Colors[theme].red,
     },
   ];
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      style={{
+        flex: 1,
+        backgroundColor: Colors[theme].background, // Mover aquí
+      }}
       contentContainerStyle={{
+        flexGrow: 1, // Cambiar de paddingTop a flexGrow
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        backgroundColor: Colors[theme].background,
       }}
       showsVerticalScrollIndicator={false}
     >
@@ -64,7 +67,7 @@ export default function HomeScreen() {
           amount="$8,000"
           amountType="h5"
           titleType="bodyXS"
-          iconColor={Colors[theme].success}
+          iconColor={Colors[theme].green}
         />
         <SummaryTitle
           theme={theme}
@@ -73,52 +76,7 @@ export default function HomeScreen() {
           amount="$3,500"
           amountType="h5"
           titleType="bodyXS"
-          iconColor={Colors[theme].success}
-        />
-        <SummaryTitle
-          theme={theme}
-          iconName="laptop"
-          title="Trabajo Freelance"
-          amount="$1,200"
-          amountType="h5"
-          titleType="bodyXS"
-          iconColor={Colors[theme].success}
-        />
-        <SummaryTitle
-          theme={theme}
-          iconName="pricetag"
-          title="Venta"
-          amount="$450"
-          amountType="h5"
-          titleType="bodyXS"
-          iconColor={Colors[theme].success}
-        />
-        <SummaryTitle
-          theme={theme}
-          iconName="trending-up"
-          title="Rendimientos"
-          amount="$285"
-          amountType="h5"
-          titleType="bodyXS"
-          iconColor={Colors[theme].secondary}
-        />
-        <SummaryTitle
-          theme={theme}
-          iconName="arrow-undo"
-          title="Reembolso"
-          amount="$120"
-          amountType="h5"
-          titleType="bodyXS"
-          iconColor={Colors[theme].success}
-        />
-        <SummaryTitle
-          theme={theme}
-          iconName="gift"
-          title="Bono"
-          amount="$500"
-          amountType="h5"
-          titleType="bodyXS"
-          iconColor={Colors[theme].success}
+          iconColor={Colors[theme].green}
         />
       </Container>
     </ScrollView>

@@ -1,4 +1,5 @@
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
+import { initDatabase } from "@/database/database";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
@@ -9,7 +10,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 
@@ -24,6 +25,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [dbInitialized, setDbInitialized] = useState(false);
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -40,8 +42,25 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
+  useEffect(() => {
+    const setupDatabase = async () => {
+      try {
+        await initDatabase();
+        setDbInitialized(true);
+      } catch (error) {
+        console.error("Error setting up database:", error);
+      }
+    };
+
+    setupDatabase();
+  }, []);
+
   if (!loaded) {
     return null;
+  }
+
+  if (!dbInitialized) {
+    return null; // o un loading spinner
   }
 
   return (

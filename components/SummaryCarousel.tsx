@@ -45,7 +45,7 @@ const SummaryCarousel: React.FC<SummaryCarouselProps> = ({ theme, data }) => {
               amount={item.amount}
               amountType="h2"
               iconName={item.iconName}
-              iconColor={item.iconColor || Colors[theme].secondary}
+              iconColor={item.iconColor || Colors[theme].blue}
             />
           </View>
         )}
