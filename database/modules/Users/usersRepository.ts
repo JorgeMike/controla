@@ -1,5 +1,5 @@
-import { openDatabase } from "../database";
-import { User } from "../User/createUsersTable";
+import { openDatabase } from "../../database";
+import { User } from "./usersSchema";
 
 const db = openDatabase();
 
@@ -23,8 +23,9 @@ export const userRepository = {
       | "id"
       | "created_at"
       | "updated_at"
-      | "actual_balance"
       | "balance_last_updated"
+      | "profile_image"
+      | "actual_account"
     >
   ) => {
     console.log("👤 Creando usuario...", user);
@@ -35,9 +36,8 @@ export const userRepository = {
         currency, 
         currency_symbol, 
         initial_balance, 
-        actual_balance, 
-        profile_image
-      ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        actual_balance
+      ) VALUES (?, ?, ?, ?, ?, ?)`,
       [
         user.name,
         user.email || null,
@@ -45,17 +45,11 @@ export const userRepository = {
         user.currency_symbol,
         user.initial_balance,
         user.initial_balance, // actual_balance inicia igual que initial_balance
-        user.profile_image || null,
       ]
     );
 
-    console.log("✅ Usuario creado con ID:", result.lastInsertRowId);
-
-    // Crear configuraciones por defecto para el nuevo usuario
     const userId = result.lastInsertRowId;
-    await db.runAsync(`INSERT INTO user_settings (user_id) VALUES (?)`, [
-      userId,
-    ]);
+    console.log("✅ Usuario creado con ID:", userId);
 
     return userId;
   },

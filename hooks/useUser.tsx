@@ -1,4 +1,4 @@
-import { userRepository } from "@/database/repositories/userRepository";
+import { userRepository } from "@/database/modules/Users/usersRepository";
 import { User, UserSettings } from "@/database/schema";
 import { useEffect, useState } from "react";
 

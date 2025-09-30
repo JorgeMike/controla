@@ -4,7 +4,7 @@ import { CURRENCY_OPTIONS } from "@/constants/Currency";
 import { ONBOARDING_KEY } from "@/constants/keys";
 import Measures from "@/constants/Measures";
 import { useAppTheme } from "@/contexts/ThemeContext";
-import { userRepository } from "@/database/repositories/userRepository";
+import { userRepository } from "@/database/modules/Users/usersRepository";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
@@ -115,7 +115,7 @@ export default function OnboardingFormScreen() {
           CURRENCY_OPTIONS.find((c) => c.code === formData.currency)?.symbol ||
           "$",
         initial_balance: parseFloat(formData.initialBalance) || 0,
-        profile_image: undefined,
+        actual_balance: parseFloat(formData.initialBalance) || 0,
       });
 
       console.log("Usuario creado:", user);
@@ -123,7 +123,6 @@ export default function OnboardingFormScreen() {
       router.replace("/(tabs)");
     } catch (error) {
       console.error("Error al finalizar el onboarding:", error);
-      // Optionally, show an alert or handle the error as needed
     }
   };
 

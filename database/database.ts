@@ -1,5 +1,5 @@
 import * as SQLite from "expo-sqlite";
-import { createUsersTable } from "./User/createUsersTable";
+import { createUsersTable } from "./modules/Users/createUsersTable";
 
 const DB_NAME = "controla.db";
 
