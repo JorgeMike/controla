@@ -4,6 +4,7 @@ import ActionButtons from "@/components/ActionButtons";
 import Container from "@/components/Container";
 import Greetings from "@/components/Greetings";
 import Header from "@/components/Header";
+import SummaryCarousel, { SummaryItem } from "@/components/SummaryCarousel";
 import { Text } from "@/components/Themed";
 import SummaryTitle from "@/components/ui/SummaryTitle";
 import Colors from "@/constants/Colors";
@@ -13,6 +14,28 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { theme } = useAppTheme() ?? "light";
+
+  // Datos para el carrusel
+  const summaryData: SummaryItem[] = [
+    {
+      title: "Total",
+      amount: "$15,130.15",
+      iconName: "wallet",
+      iconColor: Colors[theme].secondary,
+    },
+    {
+      title: "Ingresos del Mes",
+      amount: "$8,500.00",
+      iconName: "trending-up",
+      iconColor: Colors[theme].success,
+    },
+    {
+      title: "Gastos del Mes",
+      amount: "$3,250.00",
+      iconName: "trending-down",
+      iconColor: Colors[theme].danger,
+    },
+  ];
 
   return (
     <ScrollView
@@ -27,14 +50,7 @@ export default function HomeScreen() {
       <Container>
         <Header theme={theme} />
         <Greetings />
-        <SummaryTitle
-          style={{ marginTop: 20 }}
-          theme={theme}
-          title="Total"
-          amount="$15,130.15"
-          amountType="h2"
-          iconColor={Colors[theme].secondary}
-        />
+        <SummaryCarousel theme={theme} data={summaryData} />
       </Container>
 
       <ActionButtons />

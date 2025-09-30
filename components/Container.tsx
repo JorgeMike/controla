@@ -7,7 +7,7 @@ export default function Container({ style, ...props }: ViewProps) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: Measures.medium,
+    paddingVertical: Measures.small,
     paddingHorizontal: Measures.large,
   },
 });

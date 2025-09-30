@@ -17,11 +17,6 @@ export default {
     surface: "#ffffffff",
     surfaceVariant: "#e8e8e8",
 
-    // Tokens de contenido
-    onBackground: "#000",
-    onSurface: "#1a1a1a",
-    onPrimary: "#fff",
-
     // Estados
     disabled: "#ccc",
     placeholder: "#999",
@@ -38,10 +33,6 @@ export default {
     text: "#ffffff",
     surface: "#28272c",
     surfaceVariant: "#2a2a2a",
-
-    onBackground: "#fff",
-    onSurface: "#e0e0e0",
-    onPrimary: "#000",
 
     disabled: "#666",
     placeholder: "#888",
