@@ -1,5 +1,6 @@
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
-import { clearDatabase } from "@/database/database";
+import { UserProvider } from "@/contexts/UserContext";
+import { initDatabase } from "@/database/database";
 import { userRepository } from "@/database/modules/Users/usersRepository";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
@@ -44,7 +45,7 @@ export default function RootLayout() {
   useEffect(() => {
     const setupDatabase = async () => {
       try {
-        await clearDatabase();
+        await initDatabase();
         setDatabaseInitialized(true);
       } catch (error) {
         console.error("Error setting up database:", error);
@@ -86,7 +87,9 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <RootLayoutNav />
+      <UserProvider>
+        <RootLayoutNav />
+      </UserProvider>
     </ThemeProvider>
   );
 }

@@ -9,17 +9,19 @@ import { Text } from "@/components/Themed";
 import SummaryTitle from "@/components/ui/SummaryTitle";
 import Colors from "@/constants/Colors";
 import { useAppTheme } from "@/contexts/ThemeContext";
+import { useUser } from "@/contexts/UserContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { theme } = useAppTheme() ?? "light";
+  const { user } = useUser();
 
   // Datos para el carrusel
   const summaryData: SummaryItem[] = [
     {
       title: "Total",
-      amount: "$15,130.15",
+      amount: `$${user?.actual_balance.toFixed(2)}`,
       iconName: "wallet",
       iconColor: Colors[theme].blue,
     },
@@ -52,7 +54,7 @@ export default function HomeScreen() {
     >
       <Container>
         <Header theme={theme} />
-        <Greetings />
+        <Greetings name={user?.name.split(" ")[0]} />
         <SummaryCarousel theme={theme} data={summaryData} />
       </Container>
 
