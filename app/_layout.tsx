@@ -19,83 +19,115 @@ import "react-native-reanimated";
 export { ErrorBoundary } from "expo-router";
 
 export const unstable_settings = {
-  initialRouteName: "(onboarding)",
+  initialRouteName: "(tabs)",
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Prevenir que la splash screen se oculte automáticamente
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [databaseInitialized, setDatabaseInitialized] = useState(false);
+  const [appIsReady, setAppIsReady] = useState(false);
+  const [initialRoute, setInitialRoute] = useState<string | null>(null);
 
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
   });
 
-  const segments = useSegments();
-  const router = useRouter();
-
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
+  // Manejar errores de carga de fuentes
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
-  // Inicializar base de datos
+  // Inicializar app: DB + verificar usuario
   useEffect(() => {
-    const setupDatabase = async () => {
+    async function initializeApp() {
       try {
+        // 1. Esperar a que las fuentes estén cargadas
+        if (!loaded) return;
+
+        // 2. Inicializar base de datos
         await initDatabase();
-        setDatabaseInitialized(true);
+
+        // 3. Verificar si existe un usuario
+        const user = await userRepository.getCurrent();
+
+        // 4. Determinar ruta inicial
+        if (user) {
+          setInitialRoute("/(tabs)");
+        } else {
+          setInitialRoute("/(onboarding)");
+        }
+
+        // 5. Marcar app como lista
+        setAppIsReady(true);
       } catch (error) {
-        console.error("Error setting up database:", error);
+        console.error("Error initializing app:", error);
+        // En caso de error, ir a onboarding por defecto
+        setInitialRoute("/(onboarding)");
+        setAppIsReady(true);
       }
-    };
-
-    setupDatabase();
-  }, []);
-
-  // Manejar navegación basada en onboarding
-  useEffect(() => {
-    const checkOnboardingStatus = async () => {
-      if (!databaseInitialized) return;
-
-      const user = await userRepository.getCurrent();
-
-      if (!user && segments[0] !== "(onboarding)") {
-        router.replace("/(onboarding)");
-      } else if (user && segments[0] === "(onboarding)") {
-        router.replace("/(tabs)");
-      }
-    };
-
-    if (!loaded) {
-      return;
     }
 
-    checkOnboardingStatus();
-
-    SplashScreen.hideAsync();
+    initializeApp();
   }, [loaded]);
 
-  // Mostrar loading mientras se inicializa todo
-  const isReady = loaded;
+  // Ocultar splash screen cuando todo esté listo
+  useEffect(() => {
+    if (appIsReady && initialRoute) {
+      SplashScreen.hideAsync();
+    }
+  }, [appIsReady, initialRoute]);
 
-  if (!isReady) {
+  // Mantener splash screen visible hasta que todo esté listo
+  if (!appIsReady || !initialRoute) {
     return null;
   }
 
   return (
     <ThemeProvider>
       <UserProvider>
-        <RootLayoutNav />
+        <RootLayoutNav initialRoute={initialRoute} />
       </UserProvider>
     </ThemeProvider>
   );
 }
 
-function RootLayoutNav() {
+function RootLayoutNav({ initialRoute }: { initialRoute: string }) {
   const { theme } = useAppTheme();
+  const router = useRouter();
+  const segments = useSegments();
+  const [hasNavigated, setHasNavigated] = useState(false);
+
+  // Navegar a la ruta inicial solo una vez
+  useEffect(() => {
+    if (!hasNavigated) {
+      router.replace(initialRoute as any);
+      setHasNavigated(true);
+    }
+  }, [initialRoute, hasNavigated]);
+
+  // Protección de rutas: prevenir acceso no autorizado
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (!hasNavigated) return;
+
+      const user = await userRepository.getCurrent();
+      const inOnboarding = segments[0] === "(onboarding)";
+      const inTabs = segments[0] === "(tabs)";
+
+      // Si no hay usuario y está en tabs, redirigir a onboarding
+      if (!user && inTabs) {
+        router.replace("/(onboarding)");
+      }
+      // Si hay usuario y está en onboarding, redirigir a tabs
+      else if (user && inOnboarding) {
+        router.replace("/(tabs)");
+      }
+    };
+
+    checkAuth();
+  }, [segments, hasNavigated]);
 
   return (
     <NavigationThemeProvider
