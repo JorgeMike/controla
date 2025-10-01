@@ -25,7 +25,6 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 interface FormData {
   name: string;
   email: string;
-  initialBalance: string;
   currency: string;
   monthlyGoal: string;
 }
@@ -69,7 +68,6 @@ export default function OnboardingFormScreen() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
-    initialBalance: "",
     currency: "USD",
     monthlyGoal: "",
   });
@@ -112,8 +110,6 @@ export default function OnboardingFormScreen() {
         currency_symbol:
           CURRENCY_OPTIONS.find((c) => c.code === formData.currency)?.symbol ||
           "$",
-        initial_balance: parseFloat(formData.initialBalance) || 0,
-        actual_balance: parseFloat(formData.initialBalance) || 0,
       });
       router.replace("/(tabs)");
     } catch (error) {
@@ -166,30 +162,6 @@ export default function OnboardingFormScreen() {
               autoCapitalize="words"
             />
           </>
-        );
-
-      case "initialBalance":
-        return (
-          <TextInput
-            style={[
-              styles.input,
-              styles.inputNumber,
-              {
-                backgroundColor: Colors[theme].background,
-                color: Colors[theme].text,
-                borderColor: Colors[theme].text + "30",
-              },
-            ]}
-            placeholder="0.00"
-            placeholderTextColor={Colors[theme].text + "60"}
-            value={formData.initialBalance}
-            onChangeText={(text) => {
-              // Solo permitir números y punto decimal
-              const cleaned = text.replace(/[^0-9.]/g, "");
-              updateFormField("initialBalance", cleaned);
-            }}
-            keyboardType="decimal-pad"
-          />
         );
 
       case "currency":

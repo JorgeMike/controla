@@ -20,12 +20,7 @@ export const userRepository = {
   create: async (
     user: Omit<
       User,
-      | "id"
-      | "created_at"
-      | "updated_at"
-      | "balance_last_updated"
-      | "profile_image"
-      | "actual_account"
+      "id" | "created_at" | "updated_at" | "profile_image" | "actual_account"
     >
   ) => {
     console.log("👤 Creando usuario...", user);
@@ -34,18 +29,9 @@ export const userRepository = {
         name, 
         email, 
         currency, 
-        currency_symbol, 
-        initial_balance, 
-        actual_balance
+        currency_symbol,
       ) VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        user.name,
-        user.email || null,
-        user.currency,
-        user.currency_symbol,
-        user.initial_balance,
-        user.initial_balance, // actual_balance inicia igual que initial_balance
-      ]
+      [user.name, user.email || null, user.currency, user.currency_symbol]
     );
 
     const userId = result.lastInsertRowId;

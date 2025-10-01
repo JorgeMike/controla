@@ -9,11 +9,6 @@ export const createUsersTable = async (db: SQLiteDatabase) => {
       currency TEXT NOT NULL DEFAULT 'USD',
       currency_symbol TEXT NOT NULL DEFAULT '$',
       actual_account BOOLEAN NOT NULL DEFAULT 1,
-      
-      initial_balance REAL NOT NULL DEFAULT 0,
-      actual_balance REAL NOT NULL DEFAULT 0,
-      balance_last_updated TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-              
       profile_image TEXT,
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP

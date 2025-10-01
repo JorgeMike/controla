@@ -25,6 +25,10 @@ export const unstable_settings = {
 // Prevenir que la splash screen se oculte automáticamente
 SplashScreen.preventAutoHideAsync();
 
+SplashScreen.setOptions({
+  duration: 2000,
+});
+
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
@@ -48,6 +52,7 @@ export default function RootLayout() {
 
         // 2. Inicializar base de datos
         await initDatabase();
+        //await clearDatabase(); // Solo para desarrollo, eliminar en producción
 
         // 3. Verificar si existe un usuario
         const user = await userRepository.getCurrent();
@@ -74,6 +79,7 @@ export default function RootLayout() {
 
   // Ocultar splash screen cuando todo esté listo
   useEffect(() => {
+    console.log("App is ready:", appIsReady, "Initial route:", initialRoute);
     if (appIsReady && initialRoute) {
       SplashScreen.hideAsync();
     }
