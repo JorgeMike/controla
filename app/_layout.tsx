@@ -1,8 +1,7 @@
-import { ONBOARDING_KEY } from "@/constants/keys";
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
 import { clearDatabase } from "@/database/database";
+import { userRepository } from "@/database/modules/Users/usersRepository";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DarkTheme,
   DefaultTheme,
@@ -19,18 +18,14 @@ import "react-native-reanimated";
 export { ErrorBoundary } from "expo-router";
 
 export const unstable_settings = {
-  initialRouteName: "(tabs)",
+  initialRouteName: "(onboarding)",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [appState, setAppState] = useState({
-    dbInitialized: false,
-    onboardingChecked: false,
-    hasCompletedOnboarding: false,
-  });
+  const [databaseInitialized, setDatabaseInitialized] = useState(false);
 
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -49,9 +44,8 @@ export default function RootLayout() {
   useEffect(() => {
     const setupDatabase = async () => {
       try {
-        // await initDatabase();
         await clearDatabase();
-        setAppState((prev) => ({ ...prev, dbInitialized: true }));
+        setDatabaseInitialized(true);
       } catch (error) {
         console.error("Error setting up database:", error);
       }
@@ -60,52 +54,31 @@ export default function RootLayout() {
     setupDatabase();
   }, []);
 
-  // Verificar onboarding
+  // Manejar navegación basada en onboarding
   useEffect(() => {
-    const checkOnboarding = async () => {
-      try {
-        const completed = await AsyncStorage.getItem(ONBOARDING_KEY);
-        setAppState((prev) => ({
-          ...prev,
-          onboardingChecked: true,
-          hasCompletedOnboarding: completed === "true",
-        }));
-      } catch (error) {
-        console.error("Error checking onboarding:", error);
-        setAppState((prev) => ({ ...prev, onboardingChecked: true }));
+    const checkOnboardingStatus = async () => {
+      if (!databaseInitialized) return;
+
+      const user = await userRepository.getCurrent();
+
+      if (!user && segments[0] !== "(onboarding)") {
+        router.replace("/(onboarding)");
+      } else if (user && segments[0] === "(onboarding)") {
+        router.replace("/(tabs)");
       }
     };
 
-    checkOnboarding();
-  }, []);
-
-  // Manejar navegación basada en onboarding
-  useEffect(() => {
-    if (!appState.onboardingChecked || !appState.dbInitialized || !loaded) {
+    if (!loaded) {
       return;
     }
 
-    const inOnboarding = segments[0] === "(onboarding)";
+    checkOnboardingStatus();
 
-    if (appState.hasCompletedOnboarding && inOnboarding) {
-      router.replace("/(tabs)");
-    } else if (!appState.hasCompletedOnboarding && !inOnboarding) {
-      router.replace("/(onboarding)");
-    }
-
-    // Ocultar splash screen cuando todo esté listo
     SplashScreen.hideAsync();
-  }, [
-    appState.onboardingChecked,
-    appState.hasCompletedOnboarding,
-    appState.dbInitialized,
-    loaded,
-    segments,
-  ]);
+  }, [loaded]);
 
   // Mostrar loading mientras se inicializa todo
-  const isReady =
-    loaded && appState.dbInitialized && appState.onboardingChecked;
+  const isReady = loaded;
 
   if (!isReady) {
     return null;

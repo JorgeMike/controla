@@ -1,11 +1,9 @@
 import { Text, View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
 import { CURRENCY_OPTIONS } from "@/constants/Currency";
-import { ONBOARDING_KEY } from "@/constants/keys";
 import Measures from "@/constants/Measures";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { userRepository } from "@/database/modules/Users/usersRepository";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
@@ -107,7 +105,7 @@ export default function OnboardingFormScreen() {
   // Finalizar configuración
   const handleFinish = async () => {
     try {
-      const user = await userRepository.create({
+      await userRepository.create({
         name: formData.name.trim(),
         email: formData.email.trim() || undefined,
         currency: formData.currency,
@@ -117,9 +115,6 @@ export default function OnboardingFormScreen() {
         initial_balance: parseFloat(formData.initialBalance) || 0,
         actual_balance: parseFloat(formData.initialBalance) || 0,
       });
-
-      console.log("Usuario creado:", user);
-      await AsyncStorage.setItem(ONBOARDING_KEY, "true");
       router.replace("/(tabs)");
     } catch (error) {
       console.error("Error al finalizar el onboarding:", error);
@@ -128,8 +123,6 @@ export default function OnboardingFormScreen() {
 
   // Retroceder al paso anterior
   const handleBack = () => {
-    const users = userRepository.getAll();
-    console.log("Usuarios en DB:", users);
     if (currentIndex > 0) {
       carouselRef.current?.prev();
     }

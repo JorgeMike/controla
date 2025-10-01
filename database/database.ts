@@ -28,10 +28,6 @@ export const initDatabase = async (): Promise<void> => {
     // Crear tablas en orden de dependencias
     await createUsersTable(db);
 
-    // Aquí agregarías las otras tablas en el orden correcto
-    // await createCategoriesTable(db);
-    // await createTransactionsTable(db);
-
     console.log("✅ Base de datos inicializada correctamente");
   } catch (error) {
     console.error("❌ Error al inicializar la base de datos:", error);
