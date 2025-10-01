@@ -110,6 +110,7 @@ export default function OnboardingFormScreen() {
         currency_symbol:
           CURRENCY_OPTIONS.find((c) => c.code === formData.currency)?.symbol ||
           "$",
+        actual_account: true,
       });
       router.replace("/(tabs)");
     } catch (error) {

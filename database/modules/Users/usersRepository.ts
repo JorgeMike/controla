@@ -1,3 +1,4 @@
+import { NewUser } from "@/database/types";
 import { openDatabase } from "../../database";
 import { User } from "./usersSchema";
 
@@ -17,21 +18,25 @@ export const userRepository = {
   },
 
   // Crear usuario
-  create: async (
-    user: Omit<
-      User,
-      "id" | "created_at" | "updated_at" | "profile_image" | "actual_account"
-    >
-  ) => {
+  create: async (user: NewUser) => {
     console.log("👤 Creando usuario...", user);
     const result = await db.runAsync(
       `INSERT INTO users (
-        name, 
-        email, 
-        currency, 
-        currency_symbol,
-      ) VALUES (?, ?, ?, ?, ?, ?)`,
-      [user.name, user.email || null, user.currency, user.currency_symbol]
+      name, 
+      email, 
+      currency, 
+      currency_symbol,
+      actual_account,
+      profile_image
+    ) VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        user.name,
+        user.email || null,
+        user.currency,
+        user.currency_symbol,
+        user.actual_account ?? true,
+        user.profile_image || null,
+      ]
     );
 
     const userId = result.lastInsertRowId;
