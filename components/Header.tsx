@@ -5,7 +5,13 @@ import { Link } from "expo-router";
 import { View as DefaultView, Image, Pressable } from "react-native";
 import { Text } from "./Themed";
 
-export default function Header({ theme }: { theme: "light" | "dark" }) {
+export default function Header({
+  theme,
+  image,
+}: {
+  theme: "light" | "dark";
+  image?: string;
+}) {
   return (
     <DefaultView
       style={{
@@ -54,7 +60,9 @@ export default function Header({ theme }: { theme: "light" | "dark" }) {
           <Pressable>
             {({ pressed }) => (
               <Image
-                source={require("../assets/avatars/avatar.png")}
+                source={{
+                  uri: image,
+                }}
                 style={{
                   marginRight: 20,
                   opacity: pressed ? 0.5 : 1,

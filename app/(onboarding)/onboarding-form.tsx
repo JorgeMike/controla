@@ -1,9 +1,14 @@
 import { Text, View } from "@/components/Themed";
+import ImageViewer from "@/components/ui/ImageViewer";
+import SelectableList, { SelectableItem } from "@/components/ui/SelectableList";
 import Colors from "@/constants/Colors";
 import { CURRENCY_OPTIONS } from "@/constants/Currency";
 import Measures from "@/constants/Measures";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { userRepository } from "@/database/modules/Users/usersRepository";
+import { NewUser } from "@/database/types";
+import { saveImageToAppDirectory } from "@/utils/images-utils";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
@@ -19,15 +24,12 @@ import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+const PlaceholderImage = require("@/assets/avatars/avatar.png");
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 // Tipos de datos del formulario
-interface FormData {
-  name: string;
-  email: string;
-  currency: string;
-  monthlyGoal: string;
-}
+interface FormData extends Omit<NewUser, "actual_account"> {}
 
 // Pasos del formulario
 const FORM_STEPS = [
@@ -39,9 +41,9 @@ const FORM_STEPS = [
   },
   {
     id: "2",
-    title: "Balance inicial",
-    description: "¿Cuánto dinero tienes actualmente?",
-    field: "initialBalance" as keyof FormData,
+    title: "Foto de perfil",
+    description: "Añade una foto para personalizar tu cuenta",
+    field: "profile_image" as keyof FormData,
   },
   {
     id: "3",
@@ -49,31 +51,64 @@ const FORM_STEPS = [
     description: "Selecciona la moneda que usarás",
     field: "currency" as keyof FormData,
   },
-  {
-    id: "4",
-    title: "Meta mensual",
-    description: "¿Cuánto quieres ahorrar al mes? (Opcional)",
-    field: "monthlyGoal" as keyof FormData,
-  },
 ];
+
+const currencyItems: SelectableItem[] = CURRENCY_OPTIONS.map((currency) => ({
+  id: currency.code,
+  label: currency.name,
+  subtitle: currency.code,
+  icon: (
+    <Text type="h3" style={{ fontSize: 28 }}>
+      {currency.symbol}
+    </Text>
+  ),
+}));
 
 export default function OnboardingFormScreen() {
   const insets = useSafeAreaInsets();
   const { theme } = useAppTheme();
   const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedImage, setSelectedImage] = useState<string | undefined>(
+    undefined
+  );
   const carouselRef = useRef<ICarouselInstance>(null);
+  const pickImageAsync = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0].uri);
+
+      try {
+        // Guardar permanentemente
+        const permanentUri = await saveImageToAppDirectory(
+          result.assets[0].uri
+        );
+        updateFormField("profile_image", permanentUri);
+      } catch (error) {
+        alert("Error al guardar la imagen. Intenta de nuevo.");
+      }
+    } else {
+      alert("You did not select any image.");
+    }
+  };
 
   // Estado del formulario
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
+  const [formData, setFormData] = useState<NewUser>({
+    name: "Jorge",
     email: "",
     currency: "USD",
-    monthlyGoal: "",
+    actual_account: true,
+    profile_image: "",
+    currency_symbol: "",
   });
 
   // Actualizar campo del formulario
-  const updateFormField = (field: keyof FormData, value: string) => {
+  const updateFormField = (field: keyof NewUser, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -88,7 +123,7 @@ export default function OnboardingFormScreen() {
     }
 
     // Los demás campos son requeridos
-    return value.trim() !== "";
+    return value && value.trim() !== "";
   };
 
   // Avanzar al siguiente paso
@@ -105,13 +140,15 @@ export default function OnboardingFormScreen() {
     try {
       await userRepository.create({
         name: formData.name.trim(),
-        email: formData.email.trim() || undefined,
+        email: formData.email && formData.email.trim(),
         currency: formData.currency,
         currency_symbol:
           CURRENCY_OPTIONS.find((c) => c.code === formData.currency)?.symbol ||
           "$",
         actual_account: true,
+        profile_image: formData.profile_image || undefined,
       });
+
       router.replace("/(tabs)");
     } catch (error) {
       console.error("Error al finalizar el onboarding:", error);
@@ -165,78 +202,37 @@ export default function OnboardingFormScreen() {
           </>
         );
 
+      case "profile_image": {
+        return (
+          <>
+            <View style={styles.imagePickerContainer}>
+              <TouchableOpacity
+                style={styles.imagePickerButton}
+                onPress={pickImageAsync}
+              >
+                <ImageViewer
+                  style={{ width: 180, height: 180, borderRadius: 90 }}
+                  imgSource={PlaceholderImage}
+                  selectedImage={selectedImage}
+                />
+              </TouchableOpacity>
+            </View>
+          </>
+        );
+      }
+
       case "currency":
         return (
           <ScrollView
             style={styles.currencyContainer}
             showsVerticalScrollIndicator={false}
           >
-            {CURRENCY_OPTIONS.map((currency) => (
-              <TouchableOpacity
-                key={currency.code}
-                style={[
-                  styles.currencyOption,
-                  {
-                    backgroundColor: Colors[theme].background,
-                    borderColor:
-                      formData.currency === currency.code
-                        ? Colors[theme].blue
-                        : Colors[theme].text + "30",
-                  },
-                ]}
-                onPress={() => updateFormField("currency", currency.code)}
-                activeOpacity={0.7}
-              >
-                <View style={styles.currencyInfo}>
-                  <Text type="h3" style={styles.currencySymbol}>
-                    {currency.symbol}
-                  </Text>
-                  <View style={{ backgroundColor: "transparent" }}>
-                    <Text type="bodyL">{currency.name}</Text>
-                    <Text type="bodyS" style={styles.currencyCode}>
-                      {currency.code}
-                    </Text>
-                  </View>
-                </View>
-                {formData.currency === currency.code && (
-                  <View
-                    style={[
-                      styles.selectedIndicator,
-                      { backgroundColor: Colors[theme].blue },
-                    ]}
-                  />
-                )}
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        );
-
-      case "monthlyGoal":
-        return (
-          <View style={{ backgroundColor: "transparent" }}>
-            <TextInput
-              style={[
-                styles.input,
-                styles.inputNumber,
-                {
-                  backgroundColor: Colors[theme].background,
-                  color: Colors[theme].text,
-                  borderColor: Colors[theme].text + "30",
-                },
-              ]}
-              placeholder="0.00"
-              placeholderTextColor={Colors[theme].text + "60"}
-              value={formData.monthlyGoal}
-              onChangeText={(text) => {
-                const cleaned = text.replace(/[^0-9.]/g, "");
-                updateFormField("monthlyGoal", cleaned);
-              }}
-              keyboardType="decimal-pad"
+            <SelectableList
+              items={currencyItems}
+              selectedId={formData.currency}
+              onSelect={(id) => updateFormField("currency", id)}
             />
-            <Text type="bodyS" style={styles.optionalText}>
-              Puedes omitir este paso si lo prefieres
-            </Text>
-          </View>
+          </ScrollView>
         );
 
       default:
@@ -478,5 +474,19 @@ const styles = StyleSheet.create({
   buttonSecondary: {
     borderWidth: 2,
     paddingHorizontal: 24,
+  },
+  imagePickerContainer: {
+    alignItems: "center",
+    gap: 20,
+    backgroundColor: "transparent",
+  },
+  imagePickerButton: {
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    borderWidth: 3,
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

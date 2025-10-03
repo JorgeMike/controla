@@ -21,7 +21,7 @@ export default function HomeScreen() {
   const summaryData: SummaryItem[] = [
     {
       title: "Total",
-      amount: `$${user?.actual_balance.toFixed(2)}`,
+      amount: `$1000`,
       iconName: "wallet",
       iconColor: Colors[theme].blue,
     },
@@ -53,7 +53,7 @@ export default function HomeScreen() {
       showsVerticalScrollIndicator={false}
     >
       <Container>
-        <Header theme={theme} />
+        <Header theme={theme} image={user?.profile_image} />
         <Greetings name={user?.name.split(" ")[0]} />
         <SummaryCarousel theme={theme} data={summaryData} />
       </Container>

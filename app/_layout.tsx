@@ -1,6 +1,6 @@
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
 import { UserProvider } from "@/contexts/UserContext";
-import { initDatabase } from "@/database/database";
+import { clearDatabase } from "@/database/database";
 import { userRepository } from "@/database/modules/Users/usersRepository";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
@@ -51,8 +51,8 @@ export default function RootLayout() {
         if (!loaded) return;
 
         // 2. Inicializar base de datos
-        await initDatabase();
-        //await clearDatabase(); // Solo para desarrollo, eliminar en producción
+        //await initDatabase();
+        await clearDatabase(); // Solo para desarrollo, eliminar en producción
 
         // 3. Verificar si existe un usuario
         const user = await userRepository.getCurrent();
