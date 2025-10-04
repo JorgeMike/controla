@@ -3,12 +3,14 @@ import ImageViewer from "@/components/ui/ImageViewer";
 import SelectableList, { SelectableItem } from "@/components/ui/SelectableList";
 import Colors from "@/constants/Colors";
 import { CURRENCY_OPTIONS } from "@/constants/Currency";
+import { ONBOARDING_KEY } from "@/constants/keys";
 import Measures from "@/constants/Measures";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { useUser } from "@/contexts/UserContext";
 import { UserService } from "@/database/modules/Users/usersService";
 import { NewUser } from "@/database/types";
 import { saveImageToAppDirectory } from "@/utils/images-utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
@@ -171,6 +173,7 @@ export default function OnboardingFormScreen() {
 
       setUser(newUser);
 
+      await AsyncStorage.setItem(ONBOARDING_KEY, "true");
       router.replace("/(tabs)");
     } catch (error) {
       console.error("Error al finalizar el onboarding:", error);
