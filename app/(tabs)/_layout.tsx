@@ -17,11 +17,11 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { getCurrentUser } = useUser();
+  const { refreshUser } = useUser();
 
   useEffect(() => {
     // Cargar usuario actual al iniciar la app
-    getCurrentUser();
+    refreshUser();
   }, []);
 
   return (

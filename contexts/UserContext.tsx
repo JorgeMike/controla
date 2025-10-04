@@ -1,42 +1,116 @@
-import { userRepository } from "@/database/modules/Users/usersRepository";
+// contexts/UserContext.tsx
+import { UserService } from "@/database/modules/Users/usersRepository";
 import { User } from "@/database/modules/Users/usersSchema";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { NewUser } from "@/database/types";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface UserContextType {
-  getCurrentUser: () => Promise<void>;
   user: User | null;
+  allUsers: User[];
+  isLoading: boolean;
+  refreshUser: () => Promise<void>;
+  createUser: (userData: NewUser) => Promise<number>;
+  updateUser: (userId: number, userData: Partial<NewUser>) => Promise<void>;
+  switchUser: (userId: number) => Promise<void>;
+  deleteUser: (userId: number) => Promise<void>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-interface UserProviderProps {
-  children: ReactNode;
-}
+const userService = new UserService();
 
-export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getCurrentUser = async () => {
+  const refreshUser = async () => {
     try {
-      const user = await userRepository.getCurrent();
-      console.log("Usuario actual cargado:", user);
-      setUser(user);
+      setIsLoading(true);
+      const [currentUser, users] = await Promise.all([
+        userService.getCurrent(),
+        userService.getAll(),
+      ]);
+
+      setUser(currentUser);
+      setAllUsers(users);
     } catch (error) {
-      console.error("Error loading current user:", error);
+      console.error("❌ Error refreshing user:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const createUser = async (userData: NewUser): Promise<number> => {
+    try {
+      const userId = await userService.create(userData);
+      await refreshUser();
+      return userId;
+    } catch (error) {
+      console.error("❌ Error creating user:", error);
+      throw error;
+    }
+  };
+
+  const updateUser = async (
+    userId: number,
+    userData: Partial<NewUser>
+  ): Promise<void> => {
+    try {
+      await userService.update(userId, userData);
+      await refreshUser();
+    } catch (error) {
+      console.error("❌ Error updating user:", error);
+      throw error;
+    }
+  };
+
+  const switchUser = async (userId: number): Promise<void> => {
+    try {
+      await userService.switchCurrentUser(userId);
+      await refreshUser();
+    } catch (error) {
+      console.error("❌ Error switching user:", error);
+      throw error;
+    }
+  };
+
+  const deleteUser = async (userId: number): Promise<void> => {
+    try {
+      await userService.delete(userId);
+      await refreshUser();
+    } catch (error) {
+      console.error("❌ Error deleting user:", error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    refreshUser();
+  }, []);
+
   return (
-    <UserContext.Provider value={{ getCurrentUser, user }}>
+    <UserContext.Provider
+      value={{
+        user,
+        allUsers,
+        isLoading,
+        refreshUser,
+        createUser,
+        updateUser,
+        switchUser,
+        deleteUser,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
-};
+}
 
-export const useUser = (): UserContextType => {
+export const useUser = () => {
   const context = useContext(UserContext);
-  if (context === undefined) {
-    throw new Error("useUser must be used within a UserProvider");
+  if (!context) {
+    throw new Error("useUser must be used within UserProvider");
   }
   return context;
 };

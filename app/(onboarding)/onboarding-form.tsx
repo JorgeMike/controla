@@ -5,13 +5,14 @@ import Colors from "@/constants/Colors";
 import { CURRENCY_OPTIONS } from "@/constants/Currency";
 import Measures from "@/constants/Measures";
 import { useAppTheme } from "@/contexts/ThemeContext";
-import { userRepository } from "@/database/modules/Users/usersRepository";
+import { UserService } from "@/database/modules/Users/usersRepository";
 import { NewUser } from "@/database/types";
 import { saveImageToAppDirectory } from "@/utils/images-utils";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
+  Alert,
   Dimensions,
   KeyboardAvoidingView,
   Platform,
@@ -27,6 +28,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const PlaceholderImage = require("@/assets/avatars/avatar.png");
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+
+const userService = new UserService();
 
 // Tipos de datos del formulario
 interface FormData extends Omit<NewUser, "actual_account"> {}
@@ -72,6 +75,8 @@ export default function OnboardingFormScreen() {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined
   );
+  const [isLoading, setIsLoading] = useState(false);
+
   const carouselRef = useRef<ICarouselInstance>(null);
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -99,7 +104,7 @@ export default function OnboardingFormScreen() {
 
   // Estado del formulario
   const [formData, setFormData] = useState<NewUser>({
-    name: "Jorge",
+    name: "",
     email: "",
     currency: "USD",
     actual_account: true,
@@ -137,8 +142,15 @@ export default function OnboardingFormScreen() {
 
   // Finalizar configuración
   const handleFinish = async () => {
+    if (isLoading) return;
+
+    // Validar que el nombre no esté vacío
+    if (!formData.name.trim()) {
+      Alert.alert("Error", "Por favor ingresa tu nombre");
+      return;
+    }
     try {
-      await userRepository.create({
+      await userService.create({
         name: formData.name.trim(),
         email: formData.email && formData.email.trim(),
         currency: formData.currency,
@@ -152,6 +164,8 @@ export default function OnboardingFormScreen() {
       router.replace("/(tabs)");
     } catch (error) {
       console.error("Error al finalizar el onboarding:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -311,6 +325,7 @@ export default function OnboardingFormScreen() {
             ]}
             onPress={handleBack}
             activeOpacity={0.7}
+            disabled={isLoading}
           >
             <Text type="buttonM">Atrás</Text>
           </TouchableOpacity>
@@ -325,10 +340,12 @@ export default function OnboardingFormScreen() {
             },
           ]}
           onPress={handleNext}
-          disabled={!canProceed() && currentIndex < FORM_STEPS.length - 1}
+          disabled={
+            (!canProceed() && currentIndex < FORM_STEPS.length - 1) || isLoading
+          }
           activeOpacity={0.8}
         >
-          <Text type="buttonM" style={{ color: "#fff" }}>
+          <Text type="buttonM">
             {currentIndex === FORM_STEPS.length - 1 ? "Finalizar" : "Siguiente"}
           </Text>
         </TouchableOpacity>
