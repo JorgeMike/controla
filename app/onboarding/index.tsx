@@ -53,7 +53,7 @@ export default function OnboardingScreen() {
 
   const handleStart = () => {
     console.log("Comenzar - Navegar a la app principal");
-    router.replace("/(onboarding)/onboarding-form");
+    router.replace("/onboarding/form");
   };
 
   const renderItem = ({ item }: { item: (typeof CAROUSEL_DATA)[0] }) => (

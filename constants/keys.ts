@@ -1,1 +1,1 @@
-export const ONBOARDING_KEY = "@controla:onboarding_completed";
+export const ONBOARDING_KEY = "@controla:is_onboarding_completed";

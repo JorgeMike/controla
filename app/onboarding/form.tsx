@@ -171,7 +171,7 @@ export default function OnboardingFormScreen() {
 
       setUser(newUser);
 
-      // La navegación se hará automáticamente por el useEffect en RootLayoutNav
+      router.replace("/(tabs)");
     } catch (error) {
       console.error("Error al finalizar el onboarding:", error);
       Alert.alert("Error", "No se pudo crear el usuario. Intenta de nuevo.");

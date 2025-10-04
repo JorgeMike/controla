@@ -27,6 +27,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     try {
       setIsLoading(true);
       const currentUser = await userService.getCurrent();
+      console.log("Loaded user:", currentUser);
       setUser(currentUser);
     } catch (error) {
       console.error("Error loading user:", error);

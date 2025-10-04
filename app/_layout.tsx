@@ -1,16 +1,18 @@
 // app/_layout.tsx
+import { ONBOARDING_KEY } from "@/constants/keys";
 import { BankAccountsProvider } from "@/contexts/BankAccountsContext";
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
-import { UserProvider, useUser } from "@/contexts/UserContext";
+import { UserProvider } from "@/contexts/UserContext";
 import { initDatabase } from "@/database/database";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider as NavigationThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
@@ -84,31 +86,21 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const { user, isLoading } = useUser();
-  const { theme } = useAppTheme();
   const router = useRouter();
-  const segments = useSegments();
+  const { theme } = useAppTheme();
 
-  // Protección de rutas - navegación única e inteligente
   useEffect(() => {
-    if (isLoading) return; // Esperar a que termine de cargar
+    const checkOnBoarding = async () => {
+      const isOnBoardingCompleted = await AsyncStorage.getItem(ONBOARDING_KEY);
+      if (!isOnBoardingCompleted) {
+        router.replace("/onboarding");
+      } else {
+        router.replace("/(tabs)");
+      }
+    };
 
-    const inOnboarding = segments[0] === "(onboarding)";
-    const inTabs = segments[0] === "(tabs)";
-
-    // Solo navegar si es necesario
-    if (!user && !inOnboarding) {
-      console.log("⚠️ No hay usuario, redirigiendo a onboarding");
-      router.replace("/(onboarding)");
-    } else if (user && !inTabs) {
-      console.log("✅ Usuario autenticado, redirigiendo a tabs");
-      router.replace("/(tabs)");
-    }
-  }, [user, isLoading, segments]);
-
-  if (isLoading) {
-    return null;
-  }
+    checkOnBoarding();
+  }, []);
 
   return (
     <NavigationThemeProvider
