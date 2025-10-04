@@ -6,16 +6,23 @@ import Greetings from "@/components/Greetings";
 import Header from "@/components/Header";
 import SummaryCarousel, { SummaryItem } from "@/components/SummaryCarousel";
 import { Text } from "@/components/Themed";
+import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import SummaryTitle from "@/components/ui/SummaryTitle";
 import Colors from "@/constants/Colors";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { useUser } from "@/contexts/UserContext";
+import { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { theme } = useAppTheme() ?? "light";
-  const { user } = useUser();
+  const { user, loadUser, isLoading } = useUser();
+
+  useEffect(() => {
+    console.log("/(tabs)/index mounted");
+    loadUser();
+  }, []);
 
   // Datos para el carrusel
   const summaryData: SummaryItem[] = [
@@ -38,6 +45,10 @@ export default function HomeScreen() {
       iconColor: Colors[theme].red,
     },
   ];
+
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
 
   return (
     <ScrollView

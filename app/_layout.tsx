@@ -3,7 +3,7 @@ import { ONBOARDING_KEY } from "@/constants/keys";
 import { BankAccountsProvider } from "@/contexts/BankAccountsContext";
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
 import { UserProvider } from "@/contexts/UserContext";
-import { initDatabase } from "@/database/database";
+import { clearDatabase } from "@/database/database";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -45,8 +45,8 @@ export default function RootLayout() {
       try {
         if (!loaded) return;
 
-        await initDatabase();
-        //await clearDatabase(); // Para desarrollo, limpiar DB cada vez
+        //await initDatabase();
+        await clearDatabase(); // Para desarrollo, limpiar DB cada vez
         console.log("✅ Database initialized");
 
         setDbInitialized(true);
