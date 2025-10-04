@@ -1,4 +1,5 @@
 // app/_layout.tsx
+import { BankAccountsProvider } from "@/contexts/BankAccountsContext";
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
 import { UserProvider, useUser } from "@/contexts/UserContext";
 import { initDatabase } from "@/database/database";
@@ -74,7 +75,9 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <UserProvider>
-        <RootLayoutNav />
+        <BankAccountsProvider>
+          <RootLayoutNav />
+        </BankAccountsProvider>
       </UserProvider>
     </ThemeProvider>
   );

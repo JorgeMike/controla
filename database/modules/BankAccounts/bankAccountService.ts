@@ -23,4 +23,36 @@ export class BankAccountService {
       throw error;
     }
   }
+
+  async update(id: number, account: Partial<BankAccount>): Promise<void> {}
+  async create(
+    account: Omit<BankAccount, "id" | "created_at" | "updated_at">
+  ): Promise<void> {}
+  async delete(id: number): Promise<void> {}
+
+  async getByUserId(userId: number): Promise<BankAccount[]> {
+    try {
+      const results = await this.db.getAllAsync<BankAccount>(
+        "SELECT * FROM bank_accounts WHERE user_id = ?",
+        [userId]
+      );
+      return results || [];
+    } catch (error) {
+      console.error("Error getting bank accounts by user ID:", error);
+      throw error;
+    }
+  }
+
+  async getCountsByUserId(userId: number) {
+    try {
+      const results = await this.db.getAllAsync<BankAccount>(
+        "SELECT COUNT(*) FROM bank_accounts WHERE user_id = ?",
+        [userId]
+      );
+      return results || [];
+    } catch (error) {
+      console.error("Error getting bank account counts by user ID:", error);
+      throw error;
+    }
+  }
 }
