@@ -57,7 +57,7 @@ export class UserService {
   /**
    * Crea un nuevo usuario
    */
-  async create(user: NewUser): Promise<number> {
+  async create(user: NewUser): Promise<User> {
     console.log("👤 Creando usuario...", user);
 
     try {
@@ -83,7 +83,11 @@ export class UserService {
       const userId = result.lastInsertRowId;
       console.log("✅ Usuario creado con ID:", userId);
 
-      return userId;
+      const createdUser = await this.getById(userId);
+      if (!createdUser) {
+        throw new Error("Failed to retrieve created user");
+      }
+      return createdUser;
     } catch (error) {
       console.error("Error creating user:", error);
       throw error;

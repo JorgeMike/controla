@@ -5,6 +5,7 @@ import Colors from "@/constants/Colors";
 import { CURRENCY_OPTIONS } from "@/constants/Currency";
 import Measures from "@/constants/Measures";
 import { useAppTheme } from "@/contexts/ThemeContext";
+import { useUser } from "@/contexts/UserContext";
 import { UserService } from "@/database/modules/Users/usersService";
 import { NewUser } from "@/database/types";
 import { saveImageToAppDirectory } from "@/utils/images-utils";
@@ -69,8 +70,11 @@ const currencyItems: SelectableItem[] = CURRENCY_OPTIONS.map((currency) => ({
 
 export default function OnboardingFormScreen() {
   const insets = useSafeAreaInsets();
+
+  const { setUser } = useUser();
   const { theme } = useAppTheme();
   const router = useRouter();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined
@@ -144,13 +148,15 @@ export default function OnboardingFormScreen() {
   const handleFinish = async () => {
     if (isLoading) return;
 
-    // Validar que el nombre no esté vacío
     if (!formData.name.trim()) {
       Alert.alert("Error", "Por favor ingresa tu nombre");
       return;
     }
+
+    setIsLoading(true);
+
     try {
-      await userService.create({
+      const newUser = await userService.create({
         name: formData.name.trim(),
         email: formData.email && formData.email.trim(),
         currency: formData.currency,
@@ -161,9 +167,14 @@ export default function OnboardingFormScreen() {
         profile_image: formData.profile_image || undefined,
       });
 
-      router.replace("/(tabs)");
+      console.log("✅ Usuario creado:", newUser);
+
+      setUser(newUser);
+
+      // La navegación se hará automáticamente por el useEffect en RootLayoutNav
     } catch (error) {
       console.error("Error al finalizar el onboarding:", error);
+      Alert.alert("Error", "No se pudo crear el usuario. Intenta de nuevo.");
     } finally {
       setIsLoading(false);
     }

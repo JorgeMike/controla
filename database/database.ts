@@ -9,7 +9,7 @@ export const openDatabase = (): SQLite.SQLiteDatabase => {
   if (!dbInstance) {
     try {
       dbInstance = SQLite.openDatabaseSync(DB_NAME);
-      console.log("📂 Base de datos abierta correctamente");
+      //console.log("📂 Base de datos abierta correctamente");
     } catch (error) {
       console.error("❌ Error al abrir la base de datos:", error);
       throw new Error("No se pudo abrir la base de datos");
@@ -46,7 +46,7 @@ export const clearDatabase = async (): Promise<void> => {
     console.log("🗑️ Tablas eliminadas");
 
     await initDatabase();
-    console.log("♻️ Base de datos reinicializada");
+    //console.log("♻️ Base de datos reinicializada");
   } catch (error) {
     console.error("❌ Error al limpiar la base de datos:", error);
     throw error;

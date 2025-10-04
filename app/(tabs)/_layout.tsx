@@ -5,7 +5,6 @@ import React, { useEffect } from "react";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
-import { useUser } from "@/contexts/UserContext";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -17,11 +16,9 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { refreshUser } = useUser();
 
   useEffect(() => {
-    // Cargar usuario actual al iniciar la app
-    refreshUser();
+    console.log("Tabs layout mounted");
   }, []);
 
   return (
