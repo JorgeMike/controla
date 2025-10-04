@@ -1,8 +1,8 @@
 // app/_layout.tsx
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
 import { UserProvider } from "@/contexts/UserContext";
-import { clearDatabase } from "@/database/database";
-import { UserService } from "@/database/modules/Users/usersRepository";
+import { initDatabase } from "@/database/database";
+import { UserService } from "@/database/modules/Users/usersService";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
@@ -55,8 +55,8 @@ export default function RootLayout() {
         if (!loaded) return;
 
         // 2. Inicializar base de datos
-        //await initDatabase();
-        await clearDatabase(); // Solo para desarrollo, eliminar en producción
+        await initDatabase();
+        //await clearDatabase(); // Solo para desarrollo, eliminar en producción
 
         // 3. Verificar si existe un usuario usando el UserService
         const user = await userService.getCurrent();

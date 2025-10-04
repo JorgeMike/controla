@@ -1,6 +1,6 @@
 // contexts/UserContext.tsx
-import { UserService } from "@/database/modules/Users/usersRepository";
 import { User } from "@/database/modules/Users/usersSchema";
+import { UserService } from "@/database/modules/Users/usersService";
 import { NewUser } from "@/database/types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 

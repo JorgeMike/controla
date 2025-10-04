@@ -5,7 +5,7 @@ import Colors from "@/constants/Colors";
 import { CURRENCY_OPTIONS } from "@/constants/Currency";
 import Measures from "@/constants/Measures";
 import { useAppTheme } from "@/contexts/ThemeContext";
-import { UserService } from "@/database/modules/Users/usersRepository";
+import { UserService } from "@/database/modules/Users/usersService";
 import { NewUser } from "@/database/types";
 import { saveImageToAppDirectory } from "@/utils/images-utils";
 import * as ImagePicker from "expo-image-picker";
