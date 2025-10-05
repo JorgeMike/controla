@@ -1,4 +1,6 @@
-export default {
+import { ColorOption } from "@/components/ui/ColorPicker";
+
+const Colors = {
   light: {
     // Colores de marca y semánticos
     purple: "#9C27B0",
@@ -151,3 +153,15 @@ export default {
     infoLight: "#0D47A1",
   },
 };
+
+export const SEMANTIC_COLORS: ColorOption<keyof typeof Colors.light>[] = [
+  { name: "purple", light: Colors.light.purple, dark: Colors.dark.purple },
+  { name: "blue", light: Colors.light.blue, dark: Colors.dark.blue },
+  { name: "green", light: Colors.light.green, dark: Colors.dark.green },
+  { name: "orange", light: Colors.light.orange, dark: Colors.dark.orange },
+  { name: "red", light: Colors.light.red, dark: Colors.dark.red },
+  { name: "yellow", light: Colors.light.yellow, dark: Colors.dark.yellow },
+  { name: "gray", light: Colors.light.gray, dark: Colors.dark.gray },
+];
+
+export default Colors;

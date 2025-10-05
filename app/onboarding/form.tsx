@@ -181,7 +181,7 @@ export default function OnboardingFormScreen() {
       setUser(newUser);
 
       await AsyncStorage.setItem(ONBOARDING_KEY, "true");
-      router.replace("/(tabs)");
+      router.replace("/main/(tabs)");
     } catch (error) {
       console.error("Error al finalizar el onboarding:", error);
       Alert.alert("Error", "No se pudo crear el usuario. Intenta de nuevo.");

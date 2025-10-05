@@ -1,15 +1,16 @@
 import Container from "@/components/Container";
 import { Text, View } from "@/components/Themed";
 import Button from "@/components/ui/Button";
-import ColorPicker, { ColorOption } from "@/components/ui/ColorPicker";
+import ColorPicker from "@/components/ui/ColorPicker";
 import IconPicker from "@/components/ui/IconPicker";
 import Input from "@/components/ui/Input";
 import ModalSelect from "@/components/ui/ModalSelect";
-import Colors from "@/constants/Colors";
+import Colors, { SEMANTIC_COLORS } from "@/constants/Colors";
 import {
   CURRENCY_OPTIONS_INDEXED,
   CURRENCY_OPTIONS_LABELS,
 } from "@/constants/Currency";
+import { useBankAccounts } from "@/contexts/BankAccountsContext";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { BankAccountService } from "@/database/modules/BankAccounts/bankAccountService";
 import { NewBankAccount } from "@/database/modules/BankAccounts/bankAccountsTypes";
@@ -17,16 +18,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
-
-const SEMANTIC_COLORS: ColorOption[] = [
-  { name: "purple", light: Colors.light.purple, dark: Colors.dark.purple },
-  { name: "blue", light: Colors.light.blue, dark: Colors.dark.blue },
-  { name: "green", light: Colors.light.green, dark: Colors.dark.green },
-  { name: "orange", light: Colors.light.orange, dark: Colors.dark.orange },
-  { name: "red", light: Colors.light.red, dark: Colors.dark.red },
-  { name: "yellow", light: Colors.light.yellow, dark: Colors.dark.yellow },
-  { name: "gray", light: Colors.light.gray, dark: Colors.dark.gray },
-];
 
 const bankIcons: React.ComponentProps<typeof Ionicons>["name"][] = [
   "card",
@@ -45,6 +36,7 @@ const bankAccountService = new BankAccountService();
 
 export default function AddAccountScreen() {
   const { theme } = useAppTheme() ?? "light";
+  const { createAccount } = useBankAccounts();
   const [showModal, setShowModal] = useState(false);
   const [balanceInput, setBalanceInput] = useState<string>("");
 
@@ -57,7 +49,8 @@ export default function AddAccountScreen() {
     name: "",
     user_id: 1, // TODO: obtener del contexto de usuario
   });
-  const [selectedColor, setSelectedColor] = useState("purple");
+  const [selectedColor, setSelectedColor] =
+    useState<keyof typeof Colors.light>("purple");
   const [selectedIcon, setSelectedIcon] =
     useState<React.ComponentProps<typeof Ionicons>["name"]>("wallet");
 
@@ -113,17 +106,14 @@ export default function AddAccountScreen() {
     setShowModal(true);
   };
 
-  const handleConfirm = () => {
-    const completeData = {
+  const handleConfirm = async () => {
+    const completeData: NewBankAccount = {
       ...formData,
       color: selectedColor,
       icon: selectedIcon,
     };
 
-    console.log(
-      "📊 Datos del formulario:",
-      JSON.stringify(completeData, null, 2)
-    );
+    await createAccount(completeData);
 
     // Aquí iría la lógica para guardar en la BD
     setShowModal(false);

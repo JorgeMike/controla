@@ -3,27 +3,27 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export interface ColorOption {
-  name: string;
+export interface ColorOption<T = string> {
+  name: T;
   light: string;
   dark: string;
 }
 
-interface ColorPickerProps {
-  colors: ColorOption[];
-  selectedColor: string; // nombre del color
-  onColorChange: (colorName: string) => void;
+interface ColorPickerProps<T = string> {
+  colors: ColorOption<T>[];
+  selectedColor: T;
+  onColorChange: (colorName: T) => void;
   label?: string;
   theme?: "light" | "dark";
 }
 
-export default function ColorPicker({
+export default function ColorPicker<T = string>({
   colors,
   selectedColor,
   onColorChange,
   label,
   theme = "light",
-}: ColorPickerProps) {
+}: ColorPickerProps<T>) {
   return (
     <View style={styles.container}>
       {label && (
@@ -45,7 +45,7 @@ export default function ColorPicker({
             const isSelected = selectedColor === color.name;
             return (
               <TouchableOpacity
-                key={color.name}
+                key={String(color.name)}
                 style={[
                   styles.colorBox,
                   {

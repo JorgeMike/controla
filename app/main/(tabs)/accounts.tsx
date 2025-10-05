@@ -1,13 +1,16 @@
-import { ScrollView } from "react-native";
+import { View as RNView, ScrollView } from "react-native";
 
 import Container from "@/components/Container";
 import Header from "@/components/Header";
 import EmptyAccountsState from "@/components/Screens/EmptyAccountsState";
 import { Text, View } from "@/components/Themed";
+import SummaryTitle from "@/components/ui/SummaryTitle";
 import Colors from "@/constants/Colors";
 import { useBankAccounts } from "@/contexts/BankAccountsContext";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { useUser } from "@/contexts/UserContext";
+import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabTwoScreen() {
@@ -46,9 +49,40 @@ export default function TabTwoScreen() {
     >
       <Container>
         <Header theme={theme} image={user?.profile_image} />
-        <Text type="h1" style={{ marginTop: 20 }}>
-          Mis Cuentas
-        </Text>
+        <RNView
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginTop: 20,
+          }}
+        >
+          <Text type="h1">Mis Cuentas</Text>
+          <Link href="/main/add-account" asChild>
+            <Ionicons
+              name="add"
+              size={24}
+              color={Colors[theme].text}
+              style={{
+                backgroundColor: Colors[theme].blue,
+                borderRadius: 12,
+                padding: 4,
+              }}
+            />
+          </Link>
+        </RNView>
+
+        {accounts.map((account) => (
+          <SummaryTitle
+            theme={theme}
+            iconColor={Colors[theme][account.color ?? "card"]}
+            iconName={account.icon}
+            amount={`$${account.current_balance.toFixed(2)}`}
+            title={account.name}
+            key={account.id}
+            style={{ marginTop: 20 }}
+          />
+        ))}
       </Container>
     </ScrollView>
   );

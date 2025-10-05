@@ -1,6 +1,7 @@
 // contexts/BankAccountsContext.tsx
 import { BankAccountService } from "@/database/modules/BankAccounts/bankAccountService";
 import { BankAccount } from "@/database/modules/BankAccounts/bankAccountsSchema";
+import { NewBankAccount } from "@/database/modules/BankAccounts/bankAccountsTypes";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 
@@ -10,6 +11,7 @@ type BankAccountsContextType = {
   error: string | null;
 
   loadAccounts: () => Promise<void>;
+  createAccount: (account: NewBankAccount) => Promise<void>;
 };
 
 const BankAccountsContext = createContext<BankAccountsContextType | undefined>(
@@ -45,7 +47,6 @@ export function BankAccountsProvider({
     setIsLoading(true);
     try {
       const fetchedAccounts = await bankAccountService.getAllByUserId(user.id);
-      console.log("Fetched bank accounts:", fetchedAccounts);
       setAccounts(fetchedAccounts);
       setError(null);
     } catch (err) {
@@ -56,11 +57,22 @@ export function BankAccountsProvider({
     }
   };
 
+  const createAccount = async (account: NewBankAccount) => {
+    try {
+      await bankAccountService.create(account);
+      loadAccounts();
+    } catch (error) {
+      console.error("Error creating bank account:", error);
+      setError("Failed to create bank account.");
+    }
+  };
+
   const value: BankAccountsContextType = {
     accounts,
     isLoading,
     error,
     loadAccounts,
+    createAccount,
   };
 
   return (

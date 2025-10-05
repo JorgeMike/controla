@@ -3,7 +3,7 @@ import Colors from "@/constants/Colors";
 import { ONBOARDING_KEY } from "@/constants/keys";
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
 import { UserProvider } from "@/contexts/UserContext";
-import { clearDatabase } from "@/database/database";
+import { initDatabase } from "@/database/database";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
@@ -45,8 +45,8 @@ export default function RootLayout() {
       try {
         if (!loaded) return;
 
-        //await initDatabase();
-        await clearDatabase(); // Para desarrollo, limpiar DB cada vez
+        await initDatabase();
+        //await clearDatabase(); // Para desarrollo, limpiar DB cada vez
         console.log("✅ Database initialized");
 
         setDbInitialized(true);
@@ -93,7 +93,7 @@ function RootLayoutNav() {
       if (!isOnBoardingCompleted) {
         router.replace("/onboarding");
       } else {
-        router.replace("/(tabs)");
+        router.replace("/main/(tabs)");
       }
     };
 
@@ -114,7 +114,7 @@ function RootLayoutNav() {
         >
           <Stack.Screen name="onboarding" />
 
-          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="main" />
 
           <Stack.Screen
             name="profile"
@@ -129,17 +129,6 @@ function RootLayoutNav() {
             options={{
               headerShown: true,
               headerTitle: "Agregar Gasto",
-            }}
-          />
-          <Stack.Screen
-            name="add-account"
-            options={{
-              headerShown: true,
-              headerTitle: "Agregar Cuenta",
-              headerShadowVisible: false,
-              headerStyle: {
-                backgroundColor: Colors[theme].background,
-              },
             }}
           />
         </Stack>
