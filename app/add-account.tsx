@@ -6,22 +6,26 @@ import IconPicker from "@/components/ui/IconPicker";
 import Input from "@/components/ui/Input";
 import ModalSelect from "@/components/ui/ModalSelect";
 import Colors from "@/constants/Colors";
+import {
+  CURRENCY_OPTIONS_INDEXED,
+  CURRENCY_OPTIONS_LABELS,
+} from "@/constants/Currency";
 import { useAppTheme } from "@/contexts/ThemeContext";
+import { BankAccountService } from "@/database/modules/BankAccounts/bankAccountService";
 import { NewBankAccount } from "@/database/modules/BankAccounts/bankAccountsTypes";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const SEMANTIC_COLORS: ColorOption[] = [
-  { name: "purple", light: "#9C27B0", dark: "#9C27B0" },
-  { name: "blue", light: "#4A90E2", dark: "#5BA3F5" },
-  { name: "green", light: "#4CAF50", dark: "#66BB6A" },
-  { name: "orange", light: "#FF9800", dark: "#FFB74D" },
-  { name: "red", light: "#F44336", dark: "#EF5350" },
-  { name: "yellow", light: "#FFEB3B", dark: "#FFF176" },
-  { name: "gray", light: "#9E9E9E", dark: "#808080" },
+  { name: "purple", light: Colors.light.purple, dark: Colors.dark.purple },
+  { name: "blue", light: Colors.light.blue, dark: Colors.dark.blue },
+  { name: "green", light: Colors.light.green, dark: Colors.dark.green },
+  { name: "orange", light: Colors.light.orange, dark: Colors.dark.orange },
+  { name: "red", light: Colors.light.red, dark: Colors.dark.red },
+  { name: "yellow", light: Colors.light.yellow, dark: Colors.dark.yellow },
+  { name: "gray", light: Colors.light.gray, dark: Colors.dark.gray },
 ];
 
 const bankIcons: React.ComponentProps<typeof Ionicons>["name"][] = [
@@ -31,30 +35,19 @@ const bankIcons: React.ComponentProps<typeof Ionicons>["name"][] = [
   "wallet-outline",
   "cash",
   "cash-outline",
-  "business",
-  "business-outline",
-  "home",
-  "home-outline",
   "briefcase",
   "briefcase-outline",
   "bar-chart",
   "bar-chart-outline",
 ];
 
-const CURRENCY_OPTIONS = [
-  { label: "USD - Dólar", value: "USD", symbol: "$" },
-  { label: "EUR - Euro", value: "EUR", symbol: "€" },
-  { label: "MXN - Peso Mexicano", value: "MXN", symbol: "$" },
-  { label: "COP - Peso Colombiano", value: "COP", symbol: "$" },
-  { label: "ARS - Peso Argentino", value: "ARS", symbol: "$" },
-  { label: "CLP - Peso Chileno", value: "CLP", symbol: "$" },
-];
+const bankAccountService = new BankAccountService();
 
 export default function AddAccountScreen() {
-  const insets = useSafeAreaInsets();
-
   const { theme } = useAppTheme() ?? "light";
   const [showModal, setShowModal] = useState(false);
+  const [balanceInput, setBalanceInput] = useState<string>("");
+
   const [formData, setFormData] = useState<NewBankAccount>({
     currency: "USD",
     currency_symbol: "$",
@@ -73,21 +66,29 @@ export default function AddAccountScreen() {
   };
 
   const handleBalanceChange = (text: string) => {
-    // Remover caracteres no numéricos excepto punto decimal
-    const cleanText = text.replace(/[^0-9.]/g, "");
-    const balance = parseFloat(cleanText) || 0;
+    // Limpiar el input
+    let cleaned = text.replace(/[^0-9.]/g, "");
 
+    // Prevenir múltiples puntos
+    const parts = cleaned.split(".");
+    if (parts.length > 2) {
+      cleaned = parts[0] + "." + parts.slice(1).join("");
+    }
+
+    // Guardar el string en el estado del input
+    setBalanceInput(cleaned);
+
+    // Actualizar el número solo si es válido
+    const numValue = parseFloat(cleaned) || 0;
     setFormData((prev) => ({
       ...prev,
-      initial_balance: balance,
-      current_balance: balance,
+      initial_balance: numValue,
+      current_balance: numValue,
     }));
   };
 
   const handleCurrencyChange = (value: string) => {
-    const selectedCurrency = CURRENCY_OPTIONS.find(
-      (opt) => opt.value === value
-    );
+    const selectedCurrency = CURRENCY_OPTIONS_INDEXED[value];
 
     setFormData((prev) => ({
       ...prev,
@@ -157,12 +158,8 @@ export default function AddAccountScreen() {
               iconName="cash"
               placeholder="Ej: 1000 o 1000.50"
               theme={theme}
-              keyboardType="numeric"
-              value={
-                formData.initial_balance > 0
-                  ? formData.initial_balance.toString()
-                  : ""
-              }
+              keyboardType="decimal-pad"
+              value={balanceInput}
               onChangeText={handleBalanceChange}
             />
             <ModalSelect
@@ -172,7 +169,7 @@ export default function AddAccountScreen() {
               onValueChange={handleCurrencyChange}
               selectedValue={formData.currency}
               theme={theme}
-              options={CURRENCY_OPTIONS}
+              options={CURRENCY_OPTIONS_LABELS}
             />
 
             <ColorPicker
@@ -205,11 +202,19 @@ export default function AddAccountScreen() {
         <Portal>
           <Modal
             visible={showModal}
-            onDismiss={() => setShowModal(false)}
             contentContainerStyle={[
               styles.modalContainer,
-              { backgroundColor: Colors[theme].surface },
+              {
+                backgroundColor: Colors[theme].surface,
+                borderWidth: 2,
+                borderColor: Colors[theme].border,
+              },
             ]}
+            theme={{
+              colors: {
+                backdrop: Colors[theme].background + "99",
+              },
+            }}
           >
             <Text style={[styles.modalTitle]}>Resumen de la cuenta</Text>
 
@@ -225,7 +230,7 @@ export default function AddAccountScreen() {
               <Ionicons
                 name={selectedIcon}
                 size={48}
-                color={Colors[theme].background}
+                color={Colors[theme].text}
               />
             </View>
 

@@ -4,7 +4,10 @@ import ImageViewer from "@/components/ui/ImageViewer";
 import Input from "@/components/ui/Input";
 import SelectableList, { SelectableItem } from "@/components/ui/SelectableList";
 import Colors from "@/constants/Colors";
-import { CURRENCY_OPTIONS } from "@/constants/Currency";
+import {
+  CURRENCY_OPTIONS_INDEXED,
+  CURRENCY_OPTIONS_LABELS,
+} from "@/constants/Currency";
 import { ONBOARDING_KEY } from "@/constants/keys";
 import Measures from "@/constants/Measures";
 import { useAppTheme } from "@/contexts/ThemeContext";
@@ -61,16 +64,18 @@ const FORM_STEPS = [
   },
 ];
 
-const currencyItems: SelectableItem[] = CURRENCY_OPTIONS.map((currency) => ({
-  id: currency.code,
-  label: currency.name,
-  subtitle: currency.code,
-  icon: (
-    <Text type="h3" style={{ fontSize: 28 }}>
-      {currency.symbol}
-    </Text>
-  ),
-}));
+const currencyItems: SelectableItem[] = CURRENCY_OPTIONS_LABELS.map(
+  (currency) => ({
+    id: currency.value,
+    label: currency.label,
+    subtitle: currency.value,
+    icon: (
+      <Text type="h3" style={{ fontSize: 28 }}>
+        {currency.symbol}
+      </Text>
+    ),
+  })
+);
 
 export default function OnboardingFormScreen() {
   const insets = useSafeAreaInsets();
@@ -117,7 +122,7 @@ export default function OnboardingFormScreen() {
     currency: "USD",
     actual_account: true,
     profile_image: "",
-    currency_symbol: "",
+    currency_symbol: "$",
   });
 
   // Actualizar campo del formulario
@@ -160,13 +165,13 @@ export default function OnboardingFormScreen() {
     setIsLoading(true);
 
     try {
+      const currencyInfo = CURRENCY_OPTIONS_INDEXED[formData.currency];
+
       const newUser = await userService.create({
         name: formData.name.trim(),
         email: formData.email && formData.email.trim(),
         currency: formData.currency,
-        currency_symbol:
-          CURRENCY_OPTIONS.find((c) => c.code === formData.currency)?.symbol ||
-          "$",
+        currency_symbol: currencyInfo?.symbol || "$",
         actual_account: true,
         profile_image: formData.profile_image || undefined,
       });
