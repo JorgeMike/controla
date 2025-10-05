@@ -1,6 +1,6 @@
 // app/_layout.tsx
+import Colors from "@/constants/Colors";
 import { ONBOARDING_KEY } from "@/constants/keys";
-import { BankAccountsProvider } from "@/contexts/BankAccountsContext";
 import { ThemeProvider, useAppTheme } from "@/contexts/ThemeContext";
 import { UserProvider } from "@/contexts/UserContext";
 import { clearDatabase } from "@/database/database";
@@ -77,9 +77,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <UserProvider>
-        <BankAccountsProvider>
-          <RootLayoutNav />
-        </BankAccountsProvider>
+        <RootLayoutNav />
       </UserProvider>
     </ThemeProvider>
   );
@@ -106,10 +104,18 @@ function RootLayoutNav() {
     <NavigationThemeProvider
       value={theme === "dark" ? DarkTheme : DefaultTheme}
     >
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(onboarding)" />
+      <GestureHandlerRootView
+        style={{ flex: 1, backgroundColor: Colors[theme].background }}
+      >
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="onboarding" />
+
           <Stack.Screen name="(tabs)" />
+
           <Stack.Screen
             name="profile"
             options={{
@@ -123,6 +129,17 @@ function RootLayoutNav() {
             options={{
               headerShown: true,
               headerTitle: "Agregar Gasto",
+            }}
+          />
+          <Stack.Screen
+            name="add-account"
+            options={{
+              headerShown: true,
+              headerTitle: "Agregar Cuenta",
+              headerShadowVisible: false,
+              headerStyle: {
+                backgroundColor: Colors[theme].background,
+              },
             }}
           />
         </Stack>

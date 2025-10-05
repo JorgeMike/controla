@@ -2,7 +2,7 @@
 import { User } from "@/database/modules/Users/usersSchema";
 import { UserService } from "@/database/modules/Users/usersService";
 import { useRouter } from "expo-router";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type UserContextType = {
   user: User | null;
@@ -20,6 +20,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    loadUser();
+  }, []);
 
   const loadUser = async () => {
     try {

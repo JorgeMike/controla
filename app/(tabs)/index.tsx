@@ -4,60 +4,76 @@ import ActionButtons from "@/components/ActionButtons";
 import Container from "@/components/Container";
 import Greetings from "@/components/Greetings";
 import Header from "@/components/Header";
+import EmptyAccountsState from "@/components/Screens/EmptyAccountsState";
 import SummaryCarousel, { SummaryItem } from "@/components/SummaryCarousel";
-import { Text } from "@/components/Themed";
+import { Text, View } from "@/components/Themed";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import SummaryTitle from "@/components/ui/SummaryTitle";
 import Colors from "@/constants/Colors";
+import { useBankAccounts } from "@/contexts/BankAccountsContext";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { useUser } from "@/contexts/UserContext";
-import { useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { theme } = useAppTheme() ?? "light";
-  const { user, loadUser, isLoading } = useUser();
+  const { user, isLoading: isLoadingUser } = useUser();
+  const { accounts, isLoading: isLoadingAccounts } = useBankAccounts();
 
-  useEffect(() => {
-    console.log("/(tabs)/index mounted");
-    loadUser();
-  }, []);
+  // Loading global: esperamos user Y cuentas
+  if (isLoadingUser || isLoadingAccounts) {
+    return <LoadingIndicator />;
+  }
 
-  // Datos para el carrusel
+  // Empty State: usuario sin cuentas
+  if (accounts.length === 0) {
+    return (
+      <View style={{ flex: 1, backgroundColor: Colors[theme].background }}>
+        <Container style={{ paddingTop: insets.top }}>
+          <Header theme={theme} image={user?.profile_image} />
+          <Greetings name={user?.name.split(" ")[0]} />
+        </Container>
+        <EmptyAccountsState theme={theme} />
+      </View>
+    );
+  }
+
+  // Calcular totales (luego mover a hook custom)
+  const totalBalance = accounts.reduce(
+    (sum, acc) => sum + acc.current_balance,
+    0
+  );
+
   const summaryData: SummaryItem[] = [
     {
       title: "Total",
-      amount: `$1000`,
+      amount: `${user?.currency_symbol}${totalBalance.toFixed(2)}`,
       iconName: "wallet",
       iconColor: Colors[theme].blue,
     },
     {
       title: "Ingresos del Mes",
-      amount: "$8,500.00",
+      amount: `${user?.currency_symbol}8,500.00`, // TODO: calcular real
       iconName: "trending-up",
       iconColor: Colors[theme].green,
     },
     {
       title: "Gastos del Mes",
-      amount: "$3,250.00",
+      amount: `${user?.currency_symbol}3,250.00`, // TODO: calcular real
       iconName: "trending-down",
       iconColor: Colors[theme].red,
     },
   ];
 
-  if (isLoading) {
-    return <LoadingIndicator />;
-  }
-
   return (
     <ScrollView
       style={{
         flex: 1,
-        backgroundColor: Colors[theme].background, // Mover aquí
+        backgroundColor: Colors[theme].background,
       }}
       contentContainerStyle={{
-        flexGrow: 1, // Cambiar de paddingTop a flexGrow
+        flexGrow: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
       }}
@@ -77,7 +93,7 @@ export default function HomeScreen() {
           theme={theme}
           iconName="cash"
           title="Ingreso"
-          amount="$8,000"
+          amount={`${user?.currency_symbol}8,000`}
           amountType="h5"
           titleType="bodyXS"
           iconColor={Colors[theme].green}
@@ -86,7 +102,7 @@ export default function HomeScreen() {
           theme={theme}
           iconName="wallet"
           title="Salario"
-          amount="$3,500"
+          amount={`${user?.currency_symbol}3,500`}
           amountType="h5"
           titleType="bodyXS"
           iconColor={Colors[theme].green}

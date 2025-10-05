@@ -1,4 +1,3 @@
-import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
@@ -6,9 +5,10 @@ import {
   Modal,
   Pressable,
   StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { Text, View } from "../Themed";
 
 // Tipo genérico con restricción para valores primitivos
 export interface ModalSelectOption<T extends string | number = string> {
@@ -18,12 +18,13 @@ export interface ModalSelectOption<T extends string | number = string> {
 }
 
 interface ModalSelectProps<T extends string | number = string> {
-  theme: "light" | "dark"; // Añadido para manejar el tema
+  theme: "light" | "dark";
   options: ModalSelectOption<T>[];
   selectedValue: T;
   onValueChange: (value: T) => void;
   placeholder?: string;
   label?: string;
+  iconName?: React.ComponentProps<typeof Ionicons>["name"];
 }
 
 export default function ModalSelect<T extends string | number = string>({
@@ -31,42 +32,39 @@ export default function ModalSelect<T extends string | number = string>({
   selectedValue,
   onValueChange,
   placeholder = "Seleccionar...",
-  theme = "light", // Valor por defecto
+  theme = "light",
   label,
+  iconName,
 }: ModalSelectProps<T>) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const selectedOption = options.find((opt) => opt.value === selectedValue);
 
   return (
-    <>
-      <Text type="labelXL" style={{ marginStart: 6, marginBottom: 6 }}>
-        {label}
-      </Text>
+    <View style={styles.container}>
+      {label && <Text style={styles.label}>{label}</Text>}
+
       <TouchableOpacity
-        style={[
-          styles.selectButton,
-          {
-            backgroundColor: Colors[theme].surface,
-            borderColor: Colors[theme].surfaceVariant,
-          },
-        ]}
+        style={styles.inputContainer}
         onPress={() => setModalVisible(true)}
       >
-        <View style={styles.selectTextContainer}>
-          {selectedOption?.icon && (
-            <Ionicons
-              name={selectedOption.icon}
-              size={20}
-              color={Colors[theme].text}
-              style={styles.iconMargin}
-            />
-          )}
-          <Text style={[styles.selectText]}>
-            {selectedOption?.label || placeholder}
-          </Text>
-        </View>
-        <Ionicons name="chevron-down" size={20} color={Colors[theme].text} />
+        {iconName && (
+          <Ionicons
+            name={iconName}
+            size={20}
+            color="#666"
+            style={styles.icon}
+          />
+        )}
+        <Text style={[styles.input, iconName && styles.inputWithIcon]}>
+          {selectedOption?.label || placeholder}
+        </Text>
+        <Ionicons
+          name="chevron-down"
+          size={20}
+          color="#666"
+          style={styles.chevron}
+        />
       </TouchableOpacity>
 
       <Modal
@@ -76,22 +74,14 @@ export default function ModalSelect<T extends string | number = string>({
         onRequestClose={() => setModalVisible(false)}
       >
         <Pressable
-          style={[
-            styles.modalOverlay,
-            { backgroundColor: Colors[theme].surface + "60" },
-          ]}
+          style={styles.modalOverlay}
           onPress={() => setModalVisible(false)}
         >
-          <View style={[styles.modalContent]}>
-            <View
-              style={[
-                styles.modalHeader,
-                { borderColor: Colors[theme].background },
-              ]}
-            >
-              <Text style={[styles.modalTitle]}>Seleccionar opción</Text>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Seleccionar opción</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color={Colors[theme].text} />
+                <Ionicons name="close" size={24} color="#333" />
               </TouchableOpacity>
             </View>
 
@@ -102,10 +92,7 @@ export default function ModalSelect<T extends string | number = string>({
                 <TouchableOpacity
                   style={[
                     styles.option,
-                    item.value === selectedValue && {
-                      backgroundColor: Colors[theme].background,
-                    },
-                    { borderColor: Colors[theme].background },
+                    item.value === selectedValue && styles.optionSelected,
                   ]}
                   onPress={() => {
                     onValueChange(item.value);
@@ -116,30 +103,20 @@ export default function ModalSelect<T extends string | number = string>({
                     <Ionicons
                       name={item.icon}
                       size={24}
-                      color={
-                        item.value === selectedValue
-                          ? Colors[theme].blue
-                          : Colors[theme].text
-                      }
+                      color={item.value === selectedValue ? "#007AFF" : "#333"}
                       style={styles.optionIcon}
                     />
                   )}
                   <Text
                     style={[
                       styles.optionText,
-                      item.value === selectedValue && {
-                        color: Colors[theme].blue,
-                      },
+                      item.value === selectedValue && styles.optionTextSelected,
                     ]}
                   >
                     {item.label}
                   </Text>
                   {item.value === selectedValue && (
-                    <Ionicons
-                      name="checkmark"
-                      size={24}
-                      color={Colors[theme].blue}
-                    />
+                    <Ionicons name="checkmark" size={24} color="#007AFF" />
                   )}
                 </TouchableOpacity>
               )}
@@ -147,36 +124,51 @@ export default function ModalSelect<T extends string | number = string>({
           </View>
         </Pressable>
       </Modal>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  selectButton: {
-    width: "100%",
+  container: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "500",
+    marginBottom: 8,
+    color: "#333",
+  },
+  inputContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: 15,
     borderWidth: 1,
+    borderColor: "#ccc",
     borderRadius: 8,
+    backgroundColor: "#fff",
   },
-  selectTextContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+  icon: {
+    marginLeft: 12,
+  },
+  input: {
     flex: 1,
-  },
-  iconMargin: {
-    marginRight: 8,
-  },
-  selectText: {
+    paddingVertical: 12,
+    paddingHorizontal: 12,
     fontSize: 16,
+    color: "#000",
+  },
+  inputWithIcon: {
+    paddingLeft: 8,
+  },
+  chevron: {
+    marginRight: 12,
   },
   modalOverlay: {
     flex: 1,
     justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
+    backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: "70%",
@@ -188,16 +180,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: "600",
+    color: "#333",
   },
   option: {
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  optionSelected: {
+    backgroundColor: "#f0f0f0",
   },
   optionIcon: {
     marginRight: 12,
@@ -205,8 +203,10 @@ const styles = StyleSheet.create({
   optionText: {
     flex: 1,
     fontSize: 16,
+    color: "#333",
   },
-  selectedOptionText: {
+  optionTextSelected: {
+    color: "#007AFF",
     fontWeight: "600",
   },
 });

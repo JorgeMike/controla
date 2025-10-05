@@ -1,7 +1,7 @@
 // services/userService.ts
-import { NewUser } from "@/database/types";
 import * as SQLite from "expo-sqlite";
 import { User } from "./usersSchema";
+import { NewUser } from "./UsersTypes";
 
 export class UserService {
   private db: SQLite.SQLiteDatabase;

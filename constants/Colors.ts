@@ -7,6 +7,7 @@ export default {
     orange: "#FF9800",
     red: "#F44336",
     yellow: "#FFEB3B",
+    gray: "#9E9E9E",
 
     // Tokens de superficie
     background: "#efeef3",
@@ -25,6 +26,7 @@ export default {
     orange: "#FFB74D",
     red: "#EF5350",
     yellow: "#FFF176",
+    gray: "#808080ff",
 
     background: "#17161b",
     text: "#ffffff",

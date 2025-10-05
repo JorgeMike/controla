@@ -1,5 +1,7 @@
 import { Text, View } from "@/components/Themed";
+import Button from "@/components/ui/Button";
 import ImageViewer from "@/components/ui/ImageViewer";
+import Input from "@/components/ui/Input";
 import SelectableList, { SelectableItem } from "@/components/ui/SelectableList";
 import Colors from "@/constants/Colors";
 import { CURRENCY_OPTIONS } from "@/constants/Currency";
@@ -8,7 +10,7 @@ import Measures from "@/constants/Measures";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { useUser } from "@/contexts/UserContext";
 import { UserService } from "@/database/modules/Users/usersService";
-import { NewUser } from "@/database/types";
+import { NewUser } from "@/database/modules/Users/UsersTypes";
 import { saveImageToAppDirectory } from "@/utils/images-utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
@@ -21,7 +23,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
 } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
@@ -195,57 +196,47 @@ export default function OnboardingFormScreen() {
     switch (step.field) {
       case "name":
         return (
-          <>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: Colors[theme].background,
-                  color: Colors[theme].text,
-                  borderColor: Colors[theme].text + "30",
-                },
-              ]}
-              placeholder="Tu nombre"
-              placeholderTextColor={Colors[theme].text + "60"}
+          <View style={styles.formContainer}>
+            <Input
+              label="Tu nombre"
+              iconName="person"
+              placeholder="Escribe tu nombre"
               value={formData.name}
               onChangeText={(text) => updateFormField("name", text)}
               autoCapitalize="words"
-              autoFocus
             />
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: Colors[theme].background,
-                  color: Colors[theme].text,
-                  borderColor: Colors[theme].text + "30",
-                },
-              ]}
-              placeholder="Email (opcional)"
-              placeholderTextColor={Colors[theme].text + "60"}
+            <Input
+              label="Email (opcional)"
+              iconName="mail"
+              placeholder="correo@ejemplo.com"
               value={formData.email}
               onChangeText={(text) => updateFormField("email", text)}
-              autoCapitalize="words"
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
-          </>
+          </View>
         );
 
       case "profile_image": {
         return (
-          <>
-            <View style={styles.imagePickerContainer}>
-              <TouchableOpacity
-                style={styles.imagePickerButton}
-                onPress={pickImageAsync}
-              >
-                <ImageViewer
-                  style={{ width: 180, height: 180, borderRadius: 90 }}
-                  imgSource={PlaceholderImage}
-                  selectedImage={selectedImage}
-                />
-              </TouchableOpacity>
-            </View>
-          </>
+          <View style={styles.imagePickerContainer}>
+            <TouchableOpacity
+              style={[
+                styles.imagePickerButton,
+                { borderColor: Colors[theme].text + "30" },
+              ]}
+              onPress={pickImageAsync}
+            >
+              <ImageViewer
+                style={{ width: 180, height: 180, borderRadius: 90 }}
+                imgSource={PlaceholderImage}
+                selectedImage={selectedImage}
+              />
+            </TouchableOpacity>
+            <Text type="bodyS" style={styles.imageHint}>
+              Toca para seleccionar una imagen
+            </Text>
+          </View>
         );
       }
 
@@ -283,7 +274,7 @@ export default function OnboardingFormScreen() {
           </Text>
         </View>
 
-        <View style={styles.formContainer}>{renderFormStep(item)}</View>
+        {renderFormStep(item)}
       </View>
     </KeyboardAvoidingView>
   );
@@ -303,7 +294,7 @@ export default function OnboardingFormScreen() {
               styles.progressFill,
               {
                 width: `${((currentIndex + 1) / FORM_STEPS.length) * 100}%`,
-                backgroundColor: Colors[theme].text,
+                backgroundColor: Colors[theme].blue,
               },
             ]}
           />
@@ -328,42 +319,33 @@ export default function OnboardingFormScreen() {
       />
 
       {/* Botones de navegación */}
-
       <View style={[styles.buttonContainer, { bottom: insets.bottom + 20 }]}>
         {currentIndex > 0 && (
-          <TouchableOpacity
-            style={[
-              styles.button,
-              styles.buttonSecondary,
-              { borderColor: Colors[theme].text + "30" },
-            ]}
+          <Button
+            title="Atrás"
+            variant="surface"
+            theme={theme}
             onPress={handleBack}
-            activeOpacity={0.7}
             disabled={isLoading}
-          >
-            <Text type="buttonM">Atrás</Text>
-          </TouchableOpacity>
+            style={{ paddingHorizontal: 24 }}
+          />
         )}
 
-        <TouchableOpacity
-          style={[
-            styles.button,
-            styles.buttonPrimary,
-            {
-              borderColor: Colors[theme].text + "30",
-            },
-          ]}
+        <Button
+          title={
+            currentIndex === FORM_STEPS.length - 1 ? "Finalizar" : "Siguiente"
+          }
+          variant="blue"
+          theme={theme}
           onPress={handleNext}
           disabled={
             (!canProceed() && currentIndex < FORM_STEPS.length - 1) || isLoading
           }
-          activeOpacity={0.8}
-        >
-          <Text type="buttonM">
-            {currentIndex === FORM_STEPS.length - 1 ? "Finalizar" : "Siguiente"}
-          </Text>
-        </TouchableOpacity>
+          loading={isLoading && currentIndex === FORM_STEPS.length - 1}
+          fullWidth
+        />
       </View>
+
       <Text
         type="bodyXS"
         style={{
@@ -412,15 +394,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     justifyContent: "center",
   },
-  contentContainer: {
-    justifyContent: "center",
-    gap: 40,
-    backgroundColor: "transparent",
-  },
-  headerContainer: {
-    gap: 12,
-    backgroundColor: "transparent",
-  },
   title: {
     textAlign: "center",
     lineHeight: 40,
@@ -432,57 +405,10 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     gap: 16,
-    flexGrow: 1,
     backgroundColor: "transparent",
-  },
-  input: {
-    fontSize: 18,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 12,
-    borderWidth: 2,
-    textAlign: "center",
-  },
-  inputNumber: {
-    fontSize: 32,
-    fontWeight: "600",
   },
   currencyContainer: {
     maxHeight: 400,
-  },
-  currencyOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 2,
-    marginBottom: 10,
-  },
-  currencyInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-    backgroundColor: "transparent",
-  },
-  currencySymbol: {
-    fontSize: 28,
-    width: 40,
-    textAlign: "center",
-  },
-  currencyCode: {
-    opacity: 0.6,
-    marginTop: 2,
-  },
-  selectedIndicator: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-  },
-  optionalText: {
-    textAlign: "center",
-    opacity: 0.6,
-    marginTop: 8,
   },
   buttonContainer: {
     position: "absolute",
@@ -490,21 +416,6 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: "row",
     gap: 12,
-  },
-  button: {
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonPrimary: {
-    flex: 1,
-    borderWidth: 2,
-  },
-  buttonSecondary: {
-    borderWidth: 2,
-    paddingHorizontal: 24,
   },
   imagePickerContainer: {
     alignItems: "center",
@@ -519,5 +430,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",
+  },
+  imageHint: {
+    opacity: 0.6,
+    textAlign: "center",
   },
 });

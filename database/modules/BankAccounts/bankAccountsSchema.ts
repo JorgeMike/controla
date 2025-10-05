@@ -2,7 +2,6 @@ export interface BankAccount {
   id: number;
   user_id: number;
   name: string; // BBVA, Santander, Cash, etc.
-  account_type: string; // checking, savings, cash, credit_card
   initial_balance: number;
   current_balance: number;
   currency: string; // USD, MXN, EUR, etc.

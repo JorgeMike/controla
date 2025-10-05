@@ -1,14 +1,12 @@
-{
-  "name": "controla",
-  "main": "expo-router/entry",
-  "version": "1.0.0",
-  "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
-  },
-  "dependencies": {
+Nombre del proyecto: Controla
+Descripción: App de finanzas personales para registrar y analizar ingresos, gastos y reembolsos.
+
+Tech Stack:
+Framework: Expo / React Native
+Dependencias actuales:
+
+```json
+"dependencies": {
     "@expo/vector-icons": "^15.0.2",
     "@gorhom/bottom-sheet": "^5.2.6",
     "@react-native-async-storage/async-storage": "^2.2.0",
@@ -31,7 +29,6 @@
     "react-native": "0.81.4",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-gifted-charts": "^1.4.64",
-    "react-native-paper": "^5.14.5",
     "react-native-reanimated": "~4.1.1",
     "react-native-reanimated-carousel": "^4.0.3",
     "react-native-safe-area-context": "~5.6.0",
@@ -39,11 +36,31 @@
     "react-native-svg": "15.12.1",
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.5.1"
-  },
-  "devDependencies": {
-    "@types/react": "~19.1.0",
-    "react-test-renderer": "19.1.0",
-    "typescript": "~5.9.2"
-  },
-  "private": true
 }
+```
+
+🧩 Reglas de Desarrollo
+
+Respuestas:
+
+Respuestas cortas y directas.
+
+Dar sugerencias sobre el manejo de estados o arquitectura.
+
+Bibliotecas:
+
+Deben ser modernas, activamente mantenidas y compatibles con Expo SDK 54.
+
+Evitar paquetes obsoletos o sin soporte.
+
+Buenas Prácticas:
+
+Seguir estándares de React Native y Expo.
+
+Mantener UX fluida y rendimiento óptimo.
+
+Usar AsyncStorage y SQLite para almacenamiento local.
+
+Código:
+
+Usar TypeScript para tipado fuerte.

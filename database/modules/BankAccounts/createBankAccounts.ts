@@ -6,7 +6,6 @@ export const createBankAccountsTable = async (db: SQLiteDatabase) => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
       name TEXT NOT NULL,
-      account_type TEXT NOT NULL DEFAULT 'checking',
       initial_balance REAL NOT NULL DEFAULT 0,
       current_balance REAL NOT NULL DEFAULT 0,
       currency TEXT NOT NULL DEFAULT 'USD',

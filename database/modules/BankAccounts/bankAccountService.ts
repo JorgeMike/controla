@@ -25,6 +25,7 @@ export class BankAccountService {
   }
 
   async update(id: number, account: Partial<BankAccount>): Promise<void> {}
+
   async create(
     account: Omit<BankAccount, "id" | "created_at" | "updated_at">
   ): Promise<void> {}
@@ -43,10 +44,10 @@ export class BankAccountService {
     }
   }
 
-  async getCountsByUserId(userId: number) {
+  async getAllByUserId(userId: number) {
     try {
       const results = await this.db.getAllAsync<BankAccount>(
-        "SELECT COUNT(*) FROM bank_accounts WHERE user_id = ?",
+        "SELECT * FROM bank_accounts WHERE user_id = ?",
         [userId]
       );
       return results || [];
