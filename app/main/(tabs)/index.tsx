@@ -75,6 +75,7 @@ export default function HomeScreen() {
         flexGrow: 1,
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
+        backgroundColor: Colors[theme].background,
       }}
       showsVerticalScrollIndicator={false}
     >

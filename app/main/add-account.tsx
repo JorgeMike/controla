@@ -4,7 +4,9 @@ import Button from "@/components/ui/Button";
 import ColorPicker from "@/components/ui/ColorPicker";
 import IconPicker from "@/components/ui/IconPicker";
 import Input from "@/components/ui/Input";
+import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import ModalSelect from "@/components/ui/ModalSelect";
+import SummaryTitle from "@/components/ui/SummaryTitle";
 import Colors, { SEMANTIC_COLORS } from "@/constants/Colors";
 import {
   CURRENCY_OPTIONS_INDEXED,
@@ -15,7 +17,8 @@ import { useAppTheme } from "@/contexts/ThemeContext";
 import { BankAccountService } from "@/database/modules/BankAccounts/bankAccountService";
 import { NewBankAccount } from "@/database/modules/BankAccounts/bankAccountsTypes";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
 
@@ -39,6 +42,9 @@ export default function AddAccountScreen() {
   const { createAccount } = useBankAccounts();
   const [showModal, setShowModal] = useState(false);
   const [balanceInput, setBalanceInput] = useState<string>("");
+  const [creatingAccount, setCreatingAccount] = useState(false);
+  const [successCreation, setSuccessCreation] = useState<boolean | null>(null);
+  const router = useRouter();
 
   const [formData, setFormData] = useState<NewBankAccount>({
     currency: "USD",
@@ -112,12 +118,18 @@ export default function AddAccountScreen() {
       color: selectedColor,
       icon: selectedIcon,
     };
+    setCreatingAccount(true);
 
-    await createAccount(completeData);
+    try {
+      await createAccount(completeData);
 
-    // Aquí iría la lógica para guardar en la BD
-    setShowModal(false);
-    Alert.alert("Éxito", "Cuenta agregada correctamente");
+      setCreatingAccount(false);
+      setSuccessCreation(true);
+    } catch (error) {
+      setSuccessCreation(false);
+    } finally {
+      setCreatingAccount(false);
+    }
   };
 
   const getColorHex = () => {
@@ -192,6 +204,10 @@ export default function AddAccountScreen() {
         <Portal>
           <Modal
             visible={showModal}
+            onDismiss={() => {
+              setShowModal(false);
+              setSuccessCreation(null);
+            }}
             contentContainerStyle={[
               styles.modalContainer,
               {
@@ -206,70 +222,98 @@ export default function AddAccountScreen() {
               },
             }}
           >
-            <Text style={[styles.modalTitle]}>Resumen de la cuenta</Text>
+            {creatingAccount ? (
+              <LoadingIndicator />
+            ) : successCreation ? (
+              // Vista de éxito
+              <View>
+                <View style={{ alignItems: "center", marginBottom: 16 }}>
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={64}
+                    color={Colors[theme].blue}
+                  />
+                </View>
 
-            <View
-              style={[
-                styles.accountPreview,
-                {
-                  backgroundColor: getColorHex(),
-                  borderColor: Colors[theme].surfaceVariant,
-                },
-              ]}
-            >
-              <Ionicons
-                name={selectedIcon}
-                size={48}
-                color={Colors[theme].text}
-              />
-            </View>
-
-            <View style={styles.summaryContainer}>
-              <View style={styles.summaryRow}>
-                <Text style={[styles.summaryLabel]}>Nombre:</Text>
-                <Text style={[styles.summaryValue]}>{formData.name}</Text>
-              </View>
-
-              <View style={styles.summaryRow}>
-                <Text style={[styles.summaryLabel]}>Saldo inicial:</Text>
-                <Text style={[styles.summaryValue]}>
-                  {formData.currency_symbol}{" "}
-                  {formData.initial_balance.toFixed(2)}
+                <Text
+                  type="h1"
+                  style={{ textAlign: "center", marginBottom: 8 }}
+                >
+                  ¡Cuenta creada!
                 </Text>
-              </View>
+                <Text style={{ textAlign: "center", marginBottom: 24 }}>
+                  Tu cuenta "{formData.name}" se ha creado exitosamente
+                </Text>
 
-              <View style={styles.summaryRow}>
-                <Text style={[styles.summaryLabel]}>Moneda:</Text>
-                <Text style={[styles.summaryValue]}>{formData.currency}</Text>
+                <View style={styles.modalButtons}>
+                  <Button
+                    title="Crear otra"
+                    variant="gray"
+                    theme={theme}
+                    onPress={() => {
+                      setShowModal(false);
+                      setSuccessCreation(null);
+                      setFormData({
+                        currency: "USD",
+                        currency_symbol: "$",
+                        initial_balance: 0,
+                        current_balance: 0,
+                        is_active: true,
+                        name: "",
+                        user_id: 1,
+                      });
+                      setBalanceInput("");
+                      setSelectedColor("purple");
+                      setSelectedIcon("wallet");
+                    }}
+                    style={{ flex: 1 }}
+                  />
+                  <Button
+                    title="Mis cuentas"
+                    variant="blue"
+                    theme={theme}
+                    onPress={() => {
+                      setShowModal(false);
+                      router.push("/main/(tabs)/accounts");
+                    }}
+                    style={{ flex: 1 }}
+                  />
+                </View>
               </View>
+            ) : (
+              // Vista de resumen original
+              <React.Fragment>
+                <Text style={styles.modalTitle}>Asi se verá tu cuenta</Text>
 
-              <View style={styles.summaryRow}>
-                <Text style={[styles.summaryLabel]}>Color:</Text>
-                <View
-                  style={[
-                    styles.colorIndicator,
-                    { backgroundColor: getColorHex() },
-                  ]}
+                <SummaryTitle
+                  amount={`${
+                    formData.currency_symbol
+                  } ${formData.initial_balance.toFixed(2)}`}
+                  theme={theme}
+                  title={formData.name || "Nombre de la cuenta"}
+                  iconName={selectedIcon}
+                  iconColor={Colors[theme].green}
+                  style={{ marginBottom: 24 }}
                 />
-              </View>
-            </View>
 
-            <View style={styles.modalButtons}>
-              <Button
-                title="Cancelar"
-                variant="gray"
-                theme={theme}
-                onPress={() => setShowModal(false)}
-                style={{ flex: 1 }}
-              />
-              <Button
-                title="Confirmar"
-                variant="blue"
-                theme={theme}
-                onPress={handleConfirm}
-                style={{ flex: 1 }}
-              />
-            </View>
+                <View style={styles.modalButtons}>
+                  <Button
+                    title="Cancelar"
+                    variant="gray"
+                    theme={theme}
+                    onPress={() => setShowModal(false)}
+                    style={{ flex: 1 }}
+                  />
+                  <Button
+                    title="Confirmar"
+                    variant="blue"
+                    theme={theme}
+                    onPress={handleConfirm}
+                    style={{ flex: 1 }}
+                  />
+                </View>
+              </React.Fragment>
+            )}
           </Modal>
         </Portal>
       </View>
@@ -286,7 +330,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 24,
     fontWeight: "700",
-    marginBottom: 24,
+    marginBottom: 12,
     textAlign: "center",
   },
   accountPreview: {

@@ -2,6 +2,7 @@
 import { BankAccountService } from "@/database/modules/BankAccounts/bankAccountService";
 import { BankAccount } from "@/database/modules/BankAccounts/bankAccountsSchema";
 import { NewBankAccount } from "@/database/modules/BankAccounts/bankAccountsTypes";
+import { useRouter } from "expo-router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useUser } from "./UserContext";
 
@@ -25,6 +26,7 @@ export function BankAccountsProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
