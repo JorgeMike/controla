@@ -1,9 +1,10 @@
 import { Text, View } from "@/components/Themed";
+import Button from "@/components/ui/Button";
 import Colors from "@/constants/Colors";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
-import { Dimensions, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Dimensions, Image, View as RNView, StyleSheet } from "react-native";
 import type { ICarouselInstance } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -56,10 +57,15 @@ export default function OnboardingScreen() {
   };
 
   const renderItem = ({ item }: { item: (typeof CAROUSEL_DATA)[0] }) => (
-    <View style={styles.slideContainer}>
-      <View style={styles.imageContainer}>
+    <View
+      style={[
+        styles.slideContainer,
+        { backgroundColor: Colors[theme].background },
+      ]}
+    >
+      <RNView style={[styles.imageContainer]}>
         <Image source={item.image} style={styles.image} resizeMode="contain" />
-      </View>
+      </RNView>
 
       <View style={styles.textContainer}>
         <Text type="h2" style={styles.title}>
@@ -76,7 +82,11 @@ export default function OnboardingScreen() {
     <View
       style={[
         styles.container,
-        { paddingTop: insets.top, paddingBottom: insets.bottom },
+        {
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          backgroundColor: Colors[theme].background,
+        },
       ]}
     >
       <Carousel
@@ -89,10 +99,18 @@ export default function OnboardingScreen() {
         onProgressChange={(_, absoluteProgress) => {
           setCurrentIndex(Math.round(absoluteProgress));
         }}
+        style={{ backgroundColor: Colors[theme].background }}
       />
 
       {/* Indicadores de página */}
-      <View style={[styles.pagination, { bottom: insets.bottom + 100 }]}>
+      <View
+        style={[
+          styles.pagination,
+          {
+            bottom: insets.bottom + 100,
+          },
+        ]}
+      >
         {CAROUSEL_DATA.map((_, index) => (
           <View
             key={index}
@@ -105,33 +123,28 @@ export default function OnboardingScreen() {
       </View>
 
       {/* Botón Siguiente/Comenzar */}
-      <TouchableOpacity
+      <Button
+        title={
+          currentIndex === CAROUSEL_DATA.length - 1 ? "Comenzar" : "Siguiente"
+        }
+        onPress={handleNext}
         style={[
           styles.button,
           {
             bottom: insets.bottom + 40,
-            backgroundColor: Colors[theme].background + "DD",
+            backgroundColor: Colors[theme].surface,
           },
         ]}
-        onPress={handleNext}
-        activeOpacity={0.8}
-      >
-        <Text type="buttonL">
-          {currentIndex === CAROUSEL_DATA.length - 1 ? "Comenzar" : "Siguiente"}
-        </Text>
-      </TouchableOpacity>
+      />
 
       {/* Botón "Saltar" (opcional) */}
       {currentIndex < CAROUSEL_DATA.length - 1 && (
-        <TouchableOpacity
-          style={[styles.skipButton, { top: insets.top + 20 }]}
+        <Button
+          title="Saltar"
+          variant="text"
           onPress={handleStart}
-          activeOpacity={0.6}
-        >
-          <Text type="bodyS" style={styles.skipText}>
-            Saltar
-          </Text>
-        </TouchableOpacity>
+          style={[styles.skipButton, { top: insets.top + 20 }]}
+        />
       )}
     </View>
   );

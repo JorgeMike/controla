@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const SEMANTIC_COLORS: ColorOption[] = [
   { name: "purple", light: "#9C27B0", dark: "#9C27B0" },
@@ -50,6 +51,8 @@ const CURRENCY_OPTIONS = [
 ];
 
 export default function AddAccountScreen() {
+  const insets = useSafeAreaInsets();
+
   const { theme } = useAppTheme() ?? "light";
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState<NewBankAccount>({
@@ -133,7 +136,12 @@ export default function AddAccountScreen() {
 
   return (
     <PaperProvider>
-      <View style={{ flex: 1, backgroundColor: Colors[theme].background }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: Colors[theme].background,
+        }}
+      >
         <ScrollView showsVerticalScrollIndicator={false}>
           <Container>
             <Input
@@ -142,11 +150,13 @@ export default function AddAccountScreen() {
               placeholder="Ej: BBVA, Santander, Meli"
               value={formData.name}
               onChangeText={handleNameChange}
+              theme={theme}
             />
             <Input
               label="Saldo inicial"
               iconName="cash"
               placeholder="Ej: 1000 o 1000.50"
+              theme={theme}
               keyboardType="numeric"
               value={
                 formData.initial_balance > 0
@@ -182,6 +192,7 @@ export default function AddAccountScreen() {
             />
 
             <Button
+              style={{ marginBottom: 32 }}
               title="Agregar cuenta"
               variant="blue"
               theme={theme}

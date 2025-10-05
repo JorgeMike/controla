@@ -81,6 +81,11 @@ export const textVariants = StyleSheet.create({
     lineHeight: 30,
     fontSize: 16,
   },
+  label: {
+    fontSize: 14,
+    fontWeight: "500",
+    marginBottom: 8,
+  },
 
   // Títulos por tamaño
   titleXXL: {

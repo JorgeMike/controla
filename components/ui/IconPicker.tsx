@@ -30,36 +30,64 @@ export default function IconPicker({
 }: IconPickerProps) {
   return (
     <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && (
+        <Text style={[styles.label, { color: Colors[theme].text }]}>
+          {label}
+        </Text>
+      )}
       <ScrollView
-        style={[styles.scrollView, { maxHeight }]}
+        style={[
+          styles.scrollView,
+          {
+            maxHeight,
+            borderColor: Colors[theme].border,
+            backgroundColor: Colors[theme].inputBackground,
+          },
+        ]}
         showsVerticalScrollIndicator={true}
       >
         <View style={styles.iconsGrid}>
-          {icons.map((iconName) => (
-            <TouchableOpacity
-              key={iconName}
-              style={[
-                styles.iconBox,
-                selectedIcon === iconName && {
-                  borderColor: Colors[theme].blue,
-                  borderWidth: 3,
-                  backgroundColor: Colors[theme].background,
-                },
-              ]}
-              onPress={() => onIconChange(iconName)}
-            >
-              <Ionicons
-                name={iconName}
-                size={28}
-                color={
-                  selectedIcon === iconName
-                    ? Colors[theme].blue
-                    : Colors[theme].text
-                }
-              />
-            </TouchableOpacity>
-          ))}
+          {icons.map((iconName) => {
+            const isSelected = selectedIcon === iconName;
+            return (
+              <TouchableOpacity
+                key={iconName}
+                style={[
+                  styles.iconBox,
+                  {
+                    borderColor: isSelected
+                      ? Colors[theme].blue
+                      : Colors[theme].border,
+                    borderWidth: isSelected ? 3 : 1,
+                    backgroundColor: isSelected
+                      ? Colors[theme].surfaceVariant
+                      : "transparent",
+                    transform: [{ scale: isSelected ? 1.05 : 1 }],
+                  },
+                ]}
+                onPress={() => onIconChange(iconName)}
+                activeOpacity={0.7}
+              >
+                <Ionicons
+                  name={iconName}
+                  size={28}
+                  color={isSelected ? Colors[theme].blue : Colors[theme].text}
+                />
+                {isSelected && (
+                  <View style={styles.checkmarkContainer}>
+                    <View
+                      style={[
+                        styles.checkmark,
+                        { backgroundColor: Colors[theme].blue },
+                      ]}
+                    >
+                      <Ionicons name="checkmark" size={10} color="#fff" />
+                    </View>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </ScrollView>
     </View>
@@ -74,12 +102,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     marginBottom: 8,
-    color: "#333",
   },
   scrollView: {
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
   },
   iconsGrid: {
     flexDirection: "row",
@@ -92,9 +118,25 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 8,
-    borderWidth: 2,
-    borderColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
+    position: "relative",
+  },
+  checkmarkContainer: {
+    position: "absolute",
+    top: -4,
+    right: -4,
+  },
+  checkmark: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    elevation: 5,
   },
 });

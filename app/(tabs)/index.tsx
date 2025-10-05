@@ -1,4 +1,4 @@
-import { ScrollView } from "react-native";
+import { View as RNView, ScrollView } from "react-native";
 
 import ActionButtons from "@/components/ActionButtons";
 import Container from "@/components/Container";
@@ -6,7 +6,7 @@ import Greetings from "@/components/Greetings";
 import Header from "@/components/Header";
 import EmptyAccountsState from "@/components/Screens/EmptyAccountsState";
 import SummaryCarousel, { SummaryItem } from "@/components/SummaryCarousel";
-import { Text, View } from "@/components/Themed";
+import { Text } from "@/components/Themed";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import SummaryTitle from "@/components/ui/SummaryTitle";
 import Colors from "@/constants/Colors";
@@ -29,13 +29,13 @@ export default function HomeScreen() {
   // Empty State: usuario sin cuentas
   if (accounts.length === 0) {
     return (
-      <View style={{ flex: 1, backgroundColor: Colors[theme].background }}>
+      <RNView style={{ flex: 1, backgroundColor: Colors[theme].background }}>
         <Container style={{ paddingTop: insets.top }}>
           <Header theme={theme} image={user?.profile_image} />
           <Greetings name={user?.name.split(" ")[0]} />
         </Container>
         <EmptyAccountsState theme={theme} />
-      </View>
+      </RNView>
     );
   }
 
@@ -70,7 +70,6 @@ export default function HomeScreen() {
     <ScrollView
       style={{
         flex: 1,
-        backgroundColor: Colors[theme].background,
       }}
       contentContainerStyle={{
         flexGrow: 1,

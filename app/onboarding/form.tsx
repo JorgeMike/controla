@@ -21,6 +21,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  View as RNView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -196,7 +197,7 @@ export default function OnboardingFormScreen() {
     switch (step.field) {
       case "name":
         return (
-          <View style={styles.formContainer}>
+          <RNView style={styles.formContainer}>
             <Input
               label="Tu nombre"
               iconName="person"
@@ -204,6 +205,7 @@ export default function OnboardingFormScreen() {
               value={formData.name}
               onChangeText={(text) => updateFormField("name", text)}
               autoCapitalize="words"
+              theme={theme}
             />
             <Input
               label="Email (opcional)"
@@ -213,8 +215,9 @@ export default function OnboardingFormScreen() {
               onChangeText={(text) => updateFormField("email", text)}
               keyboardType="email-address"
               autoCapitalize="none"
+              theme={theme}
             />
-          </View>
+          </RNView>
         );
 
       case "profile_image": {
@@ -223,7 +226,7 @@ export default function OnboardingFormScreen() {
             <TouchableOpacity
               style={[
                 styles.imagePickerButton,
-                { borderColor: Colors[theme].text + "30" },
+                { borderColor: Colors[theme].blue },
               ]}
               onPress={pickImageAsync}
             >
@@ -264,18 +267,18 @@ export default function OnboardingFormScreen() {
       style={styles.slideContainer}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View>
-        <View style={{ marginBottom: 20 }}>
+      <RNView>
+        <RNView style={{ marginBottom: 20 }}>
           <Text type="h2" style={styles.title}>
             {item.title}
           </Text>
           <Text type="bodyM" style={styles.description}>
             {item.description}
           </Text>
-        </View>
+        </RNView>
 
         {renderFormStep(item)}
-      </View>
+      </RNView>
     </KeyboardAvoidingView>
   );
 
@@ -283,7 +286,11 @@ export default function OnboardingFormScreen() {
     <View
       style={[
         styles.container,
-        { paddingTop: insets.top, paddingBottom: insets.bottom },
+        {
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          backgroundColor: Colors[theme].background,
+        },
       ]}
     >
       {/* Indicador de progreso */}
@@ -319,7 +326,7 @@ export default function OnboardingFormScreen() {
       />
 
       {/* Botones de navegación */}
-      <View style={[styles.buttonContainer, { bottom: insets.bottom + 20 }]}>
+      <RNView style={[styles.buttonContainer, { bottom: insets.bottom + 20 }]}>
         {currentIndex > 0 && (
           <Button
             title="Atrás"
@@ -344,7 +351,7 @@ export default function OnboardingFormScreen() {
           loading={isLoading && currentIndex === FORM_STEPS.length - 1}
           fullWidth
         />
-      </View>
+      </RNView>
 
       <Text
         type="bodyXS"

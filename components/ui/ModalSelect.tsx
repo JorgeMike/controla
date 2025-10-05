@@ -1,3 +1,4 @@
+import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
@@ -5,10 +6,10 @@ import {
   Modal,
   Pressable,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { Text } from "../Themed";
 
 // Tipo genérico con restricción para valores primitivos
 export interface ModalSelectOption<T extends string | number = string> {
@@ -39,30 +40,62 @@ export default function ModalSelect<T extends string | number = string>({
   const [modalVisible, setModalVisible] = useState(false);
 
   const selectedOption = options.find((opt) => opt.value === selectedValue);
+  const hasValue = selectedOption !== undefined;
 
   return (
     <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && (
+        <Text style={[styles.label, { color: Colors[theme].text }]}>
+          {label}
+        </Text>
+      )}
 
       <TouchableOpacity
-        style={styles.inputContainer}
+        style={[
+          styles.inputContainer,
+          {
+            backgroundColor: Colors[theme].inputBackground,
+            borderColor: modalVisible
+              ? Colors[theme].inputBorderFocused
+              : Colors[theme].inputBorder,
+          },
+        ]}
         onPress={() => setModalVisible(true)}
+        activeOpacity={0.7}
       >
         {iconName && (
           <Ionicons
             name={iconName}
             size={20}
-            color="#666"
+            color={
+              modalVisible
+                ? Colors[theme].inputBorderFocused
+                : Colors[theme].placeholder
+            }
             style={styles.icon}
           />
         )}
-        <Text style={[styles.input, iconName && styles.inputWithIcon]}>
+        <Text
+          style={[
+            styles.input,
+            iconName && styles.inputWithIcon,
+            {
+              color: hasValue
+                ? Colors[theme].inputText
+                : Colors[theme].placeholder,
+            },
+          ]}
+        >
           {selectedOption?.label || placeholder}
         </Text>
         <Ionicons
           name="chevron-down"
           size={20}
-          color="#666"
+          color={
+            modalVisible
+              ? Colors[theme].inputBorderFocused
+              : Colors[theme].placeholder
+          }
           style={styles.chevron}
         />
       </TouchableOpacity>
@@ -77,51 +110,98 @@ export default function ModalSelect<T extends string | number = string>({
           style={styles.modalOverlay}
           onPress={() => setModalVisible(false)}
         >
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Seleccionar opción</Text>
+          <Pressable
+            style={[
+              styles.modalContent,
+              { backgroundColor: Colors[theme].surface },
+            ]}
+            onPress={(e) => e.stopPropagation()}
+          >
+            <View
+              style={[
+                styles.modalHeader,
+                {
+                  backgroundColor: Colors[theme].surface,
+                  borderBottomColor: Colors[theme].divider,
+                },
+              ]}
+            >
+              <Text style={[styles.modalTitle, { color: Colors[theme].text }]}>
+                Seleccionar opción
+              </Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Ionicons name="close" size={24} color="#333" />
+                <Ionicons name="close" size={24} color={Colors[theme].text} />
               </TouchableOpacity>
             </View>
 
             <FlatList
               data={options}
               keyExtractor={(item) => String(item.value)}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.option,
-                    item.value === selectedValue && styles.optionSelected,
-                  ]}
-                  onPress={() => {
-                    onValueChange(item.value);
-                    setModalVisible(false);
-                  }}
-                >
-                  {item.icon && (
-                    <Ionicons
-                      name={item.icon}
-                      size={24}
-                      color={item.value === selectedValue ? "#007AFF" : "#333"}
-                      style={styles.optionIcon}
-                    />
-                  )}
-                  <Text
+              renderItem={({ item }) => {
+                const isSelected = item.value === selectedValue;
+                return (
+                  <TouchableOpacity
                     style={[
-                      styles.optionText,
-                      item.value === selectedValue && styles.optionTextSelected,
+                      styles.option,
+                      {
+                        borderBottomColor: Colors[theme].divider,
+                        backgroundColor: isSelected
+                          ? Colors[theme].surfaceVariant
+                          : "transparent",
+                      },
                     ]}
+                    onPress={() => {
+                      onValueChange(item.value);
+                      setModalVisible(false);
+                    }}
+                    activeOpacity={0.7}
                   >
-                    {item.label}
-                  </Text>
-                  {item.value === selectedValue && (
-                    <Ionicons name="checkmark" size={24} color="#007AFF" />
-                  )}
-                </TouchableOpacity>
-              )}
+                    {item.icon && (
+                      <View
+                        style={[
+                          styles.optionIconContainer,
+                          isSelected && {
+                            backgroundColor: Colors[theme].blue + "40",
+                          },
+                        ]}
+                      >
+                        <Ionicons
+                          name={item.icon}
+                          size={24}
+                          color={
+                            isSelected ? Colors[theme].blue : Colors[theme].text
+                          }
+                        />
+                      </View>
+                    )}
+                    <Text
+                      style={[
+                        styles.optionText,
+                        {
+                          color: isSelected
+                            ? Colors[theme].blue
+                            : Colors[theme].text,
+                          fontWeight: isSelected ? "600" : "400",
+                        },
+                      ]}
+                    >
+                      {item.label}
+                    </Text>
+                    {isSelected && (
+                      <View
+                        style={[
+                          styles.checkmark,
+                          { backgroundColor: Colors[theme].blue },
+                        ]}
+                      >
+                        <Ionicons name="checkmark" size={16} color="#fff" />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              }}
             />
-          </View>
+          </Pressable>
         </Pressable>
       </Modal>
     </View>
@@ -136,15 +216,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     marginBottom: 8,
-    color: "#333",
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: 8,
-    backgroundColor: "#fff",
   },
   icon: {
     marginLeft: 12,
@@ -154,7 +231,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 12,
     fontSize: 16,
-    color: "#000",
   },
   inputWithIcon: {
     paddingLeft: 8,
@@ -168,7 +244,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: "70%",
@@ -180,33 +255,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#333",
   },
   option: {
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    gap: 12,
   },
-  optionSelected: {
-    backgroundColor: "#f0f0f0",
-  },
-  optionIcon: {
-    marginRight: 12,
+  optionIconContainer: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
   },
   optionText: {
     flex: 1,
     fontSize: 16,
-    color: "#333",
   },
-  optionTextSelected: {
-    color: "#007AFF",
-    fontWeight: "600",
+  checkmark: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

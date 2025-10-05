@@ -1,3 +1,5 @@
+import { ONBOARDING_KEY } from "@/constants/keys";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SQLite from "expo-sqlite";
 import { createUsersTable } from "./modules/Users/createUsersTable";
 
@@ -42,6 +44,7 @@ export const clearDatabase = async (): Promise<void> => {
     const db = openDatabase();
 
     await db.execAsync("DROP TABLE IF EXISTS users;");
+    AsyncStorage.setItem(ONBOARDING_KEY, "false");
 
     console.log("🗑️ Tablas eliminadas");
 

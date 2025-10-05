@@ -1,6 +1,7 @@
 import { Text, View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
 import { useAppTheme } from "@/contexts/ThemeContext";
+import { Ionicons } from "@expo/vector-icons";
 import React, { ReactNode } from "react";
 import { StyleSheet, TouchableOpacity, ViewStyle } from "react-native";
 
@@ -42,10 +43,12 @@ export default function SelectableList({
             style={[
               styles.item,
               {
-                backgroundColor: Colors[theme].background,
+                backgroundColor: isSelected
+                  ? Colors[theme].surfaceVariant
+                  : Colors[theme].surface,
                 borderColor: isSelected
-                  ? Colors[theme].blue
-                  : Colors[theme].text + "30",
+                  ? Colors[theme].inputBorderFocused
+                  : Colors[theme].border,
               },
               itemStyle,
             ]}
@@ -54,12 +57,38 @@ export default function SelectableList({
           >
             <View style={styles.itemContent}>
               {item.icon && (
-                <View style={styles.iconContainer}>{item.icon}</View>
+                <View
+                  style={[
+                    styles.iconContainer,
+                    isSelected && {
+                      backgroundColor: Colors[theme].inputBorderFocused + "40",
+                      borderRadius: 8,
+                    },
+                  ]}
+                >
+                  {item.icon}
+                </View>
               )}
               <View style={styles.textContainer}>
-                <Text type="bodyL">{item.label}</Text>
+                <Text
+                  type="bodyL"
+                  style={[
+                    isSelected && {
+                      color: Colors[theme].inputBorderFocused,
+                      fontWeight: "600",
+                    },
+                  ]}
+                >
+                  {item.label}
+                </Text>
                 {item.subtitle && (
-                  <Text type="bodyS" style={styles.subtitle}>
+                  <Text
+                    type="bodyS"
+                    style={[
+                      styles.subtitle,
+                      { color: Colors[theme].textSecondary },
+                    ]}
+                  >
                     {item.subtitle}
                   </Text>
                 )}
@@ -70,9 +99,11 @@ export default function SelectableList({
               <View
                 style={[
                   styles.checkmark,
-                  { backgroundColor: Colors[theme].blue },
+                  { backgroundColor: Colors[theme].inputBorderFocused },
                 ]}
-              />
+              >
+                <Ionicons name="checkmark" size={16} color="#fff" />
+              </View>
             )}
           </TouchableOpacity>
         );
@@ -83,26 +114,28 @@ export default function SelectableList({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 10,
+    gap: 12,
     backgroundColor: "transparent",
   },
   item: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
     borderRadius: 12,
     borderWidth: 2,
   },
   itemContent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
+    gap: 12,
     flex: 1,
     backgroundColor: "transparent",
   },
   iconContainer: {
     width: 40,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "transparent",
@@ -112,12 +145,14 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   subtitle: {
-    opacity: 0.6,
-    marginTop: 2,
+    opacity: 0.7,
+    marginTop: 4,
   },
   checkmark: {
     width: 24,
     height: 24,
     borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

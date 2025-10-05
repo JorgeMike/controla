@@ -1,4 +1,5 @@
 import Colors from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -25,37 +26,68 @@ export default function ColorPicker({
 }: ColorPickerProps) {
   return (
     <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
-      <View style={styles.wrapper}>
+      {label && (
+        <Text style={[styles.label, { color: Colors[theme].text }]}>
+          {label}
+        </Text>
+      )}
+      <View
+        style={[
+          styles.wrapper,
+          {
+            borderColor: Colors[theme].border,
+            backgroundColor: Colors[theme].inputBackground,
+          },
+        ]}
+      >
         <View style={styles.colorsGrid}>
-          {colors.map((color) => (
-            <TouchableOpacity
-              key={color.name}
-              style={[
-                styles.colorBox,
-                selectedColor === color.name && {
-                  borderColor: Colors[theme].surface,
-                  borderWidth: 4,
-                },
-              ]}
-              onPress={() => onColorChange(color.name)}
-            >
-              <View
+          {colors.map((color) => {
+            const isSelected = selectedColor === color.name;
+            return (
+              <TouchableOpacity
+                key={color.name}
                 style={[
-                  styles.colorHalf,
-                  styles.colorHalfLeft,
-                  { backgroundColor: color.light },
+                  styles.colorBox,
+                  {
+                    borderColor: isSelected
+                      ? Colors[theme].blue
+                      : "transparent",
+                    borderWidth: isSelected ? 3 : 2,
+                    transform: [{ scale: isSelected ? 1.1 : 1 }],
+                  },
                 ]}
-              />
-              <View
-                style={[
-                  styles.colorHalf,
-                  styles.colorHalfRight,
-                  { backgroundColor: color.dark },
-                ]}
-              />
-            </TouchableOpacity>
-          ))}
+                onPress={() => onColorChange(color.name)}
+                activeOpacity={0.7}
+              >
+                <View
+                  style={[
+                    styles.colorHalf,
+                    styles.colorHalfLeft,
+                    { backgroundColor: color.light },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorHalf,
+                    styles.colorHalfRight,
+                    { backgroundColor: color.dark },
+                  ]}
+                />
+                {isSelected && (
+                  <View style={styles.checkmarkContainer}>
+                    <View
+                      style={[
+                        styles.checkmark,
+                        { backgroundColor: Colors[theme].blue },
+                      ]}
+                    >
+                      <Ionicons name="checkmark" size={12} color="#fff" />
+                    </View>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </View>
     </View>
@@ -70,12 +102,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     marginBottom: 8,
-    color: "#333",
   },
   wrapper: {
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#e0e0e0",
     padding: 12,
   },
   colorsGrid: {
@@ -88,10 +118,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 8,
-    borderWidth: 2,
-    borderColor: "transparent",
     flexDirection: "row",
     overflow: "hidden",
+    position: "relative",
   },
   colorHalf: {
     flex: 1,
@@ -104,5 +133,26 @@ const styles = StyleSheet.create({
   colorHalfRight: {
     borderTopRightRadius: 6,
     borderBottomRightRadius: 6,
+  },
+  checkmarkContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  checkmark: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    elevation: 5,
   },
 });
