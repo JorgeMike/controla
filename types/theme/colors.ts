@@ -24,6 +24,7 @@ export type ColorName =
   | "backgroundSecondary"
   | "text"
   | "textSecondary"
+  | "textInverse"
   | "surface"
   | "surfaceVariant"
   | "surfaceElevated"
