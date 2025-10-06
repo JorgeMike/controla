@@ -51,7 +51,7 @@ export default function AddAccountScreen() {
     currency_symbol: "$",
     initial_balance: 0,
     current_balance: 0,
-    is_active: true,
+    is_active: 1,
     name: "",
     user_id: 1, // TODO: obtener del contexto de usuario
   });
@@ -130,11 +130,6 @@ export default function AddAccountScreen() {
     } finally {
       setCreatingAccount(false);
     }
-  };
-
-  const getColorHex = () => {
-    const color = SEMANTIC_COLORS.find((c) => c.name === selectedColor);
-    return theme === "light" ? color?.light : color?.dark;
   };
 
   return (
@@ -261,7 +256,7 @@ export default function AddAccountScreen() {
                         currency_symbol: "$",
                         initial_balance: 0,
                         current_balance: 0,
-                        is_active: true,
+                        is_active: 1,
                         name: "",
                         user_id: 1,
                       });

@@ -23,7 +23,7 @@ export default function AccountDetailsSheet({
           style={[
             styles.iconContainer,
             {
-              backgroundColor: Colors[theme][account.color ?? "blue"] + "90",
+              backgroundColor: Colors[theme][account.color ?? "blue"],
               padding: 8,
               borderRadius: 10,
             },
@@ -32,7 +32,7 @@ export default function AccountDetailsSheet({
           <Ionicons
             name={account.icon}
             size={32}
-            style={{ color: Colors[theme].text }}
+            style={{ color: Colors[theme].textInverse }}
           />
         </RNView>
         <Text type="h2" style={styles.accountName}>

@@ -122,6 +122,7 @@ function RootLayoutNav() {
               presentation: "modal",
               headerShown: true,
               headerTitle: "Perfil",
+              headerShadowVisible: false,
             }}
           />
           <Stack.Screen
