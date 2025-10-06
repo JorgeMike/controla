@@ -1,6 +1,7 @@
 import { ColorOption } from "@/components/ui/ColorPicker";
+import { ColorName, ColorPalette } from "@/types/theme/colors";
 
-const Colors = {
+const Colors: ColorPalette = {
   light: {
     // Colores de marca y semánticos
     purple: "#9C27B0",
@@ -154,7 +155,7 @@ const Colors = {
   },
 };
 
-export const SEMANTIC_COLORS: ColorOption<keyof typeof Colors.light>[] = [
+export const SEMANTIC_COLORS: ColorOption<ColorName>[] = [
   { name: "purple", light: Colors.light.purple, dark: Colors.dark.purple },
   { name: "blue", light: Colors.light.blue, dark: Colors.dark.blue },
   { name: "green", light: Colors.light.green, dark: Colors.dark.green },

@@ -103,7 +103,7 @@ export default function OnboardingScreen() {
       />
 
       {/* Indicadores de página */}
-      <View
+      <RNView
         style={[
           styles.pagination,
           {
@@ -117,16 +117,18 @@ export default function OnboardingScreen() {
             style={[
               styles.paginationDot,
               currentIndex === index && styles.paginationDotActive,
+              { backgroundColor: Colors[theme].text },
             ]}
           />
         ))}
-      </View>
+      </RNView>
 
       {/* Botón Siguiente/Comenzar */}
       <Button
         title={
           currentIndex === CAROUSEL_DATA.length - 1 ? "Comenzar" : "Siguiente"
         }
+        theme={theme}
         onPress={handleNext}
         style={[
           styles.button,
@@ -140,6 +142,7 @@ export default function OnboardingScreen() {
       {/* Botón "Saltar" (opcional) */}
       {currentIndex < CAROUSEL_DATA.length - 1 && (
         <Button
+          theme={theme}
           title="Saltar"
           variant="text"
           onPress={handleStart}
@@ -199,10 +202,8 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "rgba(255, 255, 255, 0.3)",
   },
   paginationDotActive: {
-    backgroundColor: "#fff",
     width: 24,
   },
   button: {

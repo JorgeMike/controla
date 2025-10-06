@@ -3,8 +3,8 @@ import { Tabs } from "expo-router";
 import React, { useEffect } from "react";
 
 import Colors from "@/constants/Colors";
+import { useAppTheme } from "@/contexts/ThemeContext";
 import { useClientOnlyValue } from "@/hooks/useClientOnlyValue";
-import { useColorScheme } from "@/hooks/useColorScheme";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -15,7 +15,7 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { theme } = useAppTheme();
 
   useEffect(() => {
     console.log("Tabs layout mounted");
@@ -24,10 +24,10 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].blue,
+        tabBarActiveTintColor: Colors[theme].blue,
         headerShown: useClientOnlyValue(false, true),
         tabBarStyle: {
-          backgroundColor: Colors[colorScheme ?? "light"].background,
+          backgroundColor: Colors[theme].background,
         },
       }}
     >

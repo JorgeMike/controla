@@ -197,6 +197,9 @@ export default function AddAccountScreen() {
               theme={theme}
               onPress={handleSubmit}
               fullWidth
+              textStyle={{
+                color: "#ffffff",
+              }}
             />
           </Container>
         </ScrollView>
@@ -267,6 +270,7 @@ export default function AddAccountScreen() {
                       setSelectedIcon("wallet");
                     }}
                     style={{ flex: 1 }}
+                    textStyle={{ color: "#ffffff" }}
                   />
                   <Button
                     title="Mis cuentas"
@@ -277,6 +281,7 @@ export default function AddAccountScreen() {
                       router.push("/main/(tabs)/accounts");
                     }}
                     style={{ flex: 1 }}
+                    textStyle={{ color: "#ffffff" }}
                   />
                 </View>
               </View>
@@ -293,7 +298,11 @@ export default function AddAccountScreen() {
                   title={formData.name || "Nombre de la cuenta"}
                   iconName={selectedIcon}
                   iconColor={Colors[theme].green}
-                  style={{ marginBottom: 24 }}
+                  style={{
+                    marginBottom: 24,
+                    borderColor: Colors[theme].border,
+                    borderWidth: 1,
+                  }}
                 />
 
                 <View style={styles.modalButtons}>
@@ -303,6 +312,7 @@ export default function AddAccountScreen() {
                     theme={theme}
                     onPress={() => setShowModal(false)}
                     style={{ flex: 1 }}
+                    textStyle={{ color: "#ffffff" }}
                   />
                   <Button
                     title="Confirmar"
@@ -310,6 +320,7 @@ export default function AddAccountScreen() {
                     theme={theme}
                     onPress={handleConfirm}
                     style={{ flex: 1 }}
+                    textStyle={{ color: "#ffffff" }}
                   />
                 </View>
               </React.Fragment>

@@ -1,22 +1,23 @@
 import Colors from "@/constants/Colors";
+import { ColorName } from "@/types/theme/colors";
 import React from "react";
 import {
   ActivityIndicator,
   StyleSheet,
-  Text,
+  TextStyle,
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
-
-type ColorVariant = keyof typeof Colors.light;
+import { Text } from "../Themed";
 
 interface ButtonProps extends TouchableOpacityProps {
   title: string;
-  variant?: ColorVariant;
+  variant?: ColorName;
   theme?: "light" | "dark";
   loading?: boolean;
   fullWidth?: boolean;
   outline?: boolean;
+  textStyle?: TextStyle; // 👈 nuevo prop
 }
 
 export default function Button({
@@ -27,6 +28,7 @@ export default function Button({
   fullWidth = false,
   outline = false,
   disabled,
+  textStyle, // 👈 destructuramos
   style,
   ...props
 }: ButtonProps) {
@@ -55,12 +57,8 @@ export default function Button({
       return { color: Colors[theme][variant] };
     }
 
-    // Texto blanco para colores oscuros, texto oscuro para surface
     return {
-      color:
-        variant === "surface" || variant === "surfaceVariant"
-          ? Colors[theme].text
-          : "#FFFFFF",
+      color: Colors[theme].text,
     };
   };
 
@@ -81,7 +79,7 @@ export default function Button({
           color={outline ? Colors[theme][variant] : "#FFFFFF"}
         />
       ) : (
-        <Text style={[styles.text, getTextStyle()]}>{title}</Text>
+        <Text style={[styles.text, getTextStyle(), textStyle]}>{title}</Text>
       )}
     </TouchableOpacity>
   );

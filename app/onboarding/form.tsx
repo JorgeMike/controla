@@ -355,6 +355,9 @@ export default function OnboardingFormScreen() {
           }
           loading={isLoading && currentIndex === FORM_STEPS.length - 1}
           fullWidth
+          textStyle={{
+            color: theme === "dark" ? Colors[theme].text : "#FFFFFF",
+          }}
         />
       </RNView>
 

@@ -25,9 +25,28 @@ export default function TabTwoScreen() {
       <View style={{ flex: 1, backgroundColor: Colors[theme].background }}>
         <Container style={{ paddingTop: insets.top }}>
           <Header theme={theme} image={user?.profile_image} />
-          <Text type="h1" style={{ marginTop: 20 }}>
-            Mis Cuentas
-          </Text>
+          <RNView
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginTop: 20,
+            }}
+          >
+            <Text type="h1">Mis Cuentas</Text>
+            <Link href="/main/add-account" asChild>
+              <Ionicons
+                name="add"
+                size={24}
+                color="#000000"
+                style={{
+                  backgroundColor: Colors[theme].blue,
+                  borderRadius: 12,
+                  padding: 4,
+                }}
+              />
+            </Link>
+          </RNView>
         </Container>
         <EmptyAccountsState theme={theme} />
       </View>
@@ -62,7 +81,7 @@ export default function TabTwoScreen() {
             <Ionicons
               name="add"
               size={24}
-              color={Colors[theme].text}
+              color="#ffffff"
               style={{
                 backgroundColor: Colors[theme].blue,
                 borderRadius: 12,

@@ -43,7 +43,7 @@ export default function EmptyAccountsState({
           paddingHorizontal: 32,
           borderRadius: 12,
         }}
-        onPress={() => push("/add-account")} // Necesitas crear esta ruta
+        onPress={() => push("/main/add-account")} // Necesitas crear esta ruta
       >
         <Text style={{ color: Colors[theme].text, fontWeight: "600" }}>
           Crear Cuenta
