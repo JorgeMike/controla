@@ -11,11 +11,13 @@ import {
 
 import Colors from "@/constants/Colors";
 import { useAppTheme } from "@/contexts/ThemeContext";
+import { ColorName } from "@/types/theme/colors";
 
 type ThemeProps = {
   type?: keyof typeof textVariants;
   lightColor?: string;
   darkColor?: string;
+  variant?: ColorName;
 };
 
 export type TextProps = ThemeProps & DefaultText["props"];
@@ -51,7 +53,7 @@ export function View(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
-    "surface"
+    props.variant ? props.variant : "surface"
   );
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;

@@ -11,7 +11,7 @@ export interface BankAccount {
   currency_symbol: string; // $, €, etc.
   color?: keyof typeof Colors.light; // Hex color para identificación visual (#004481)
   icon?: React.ComponentProps<typeof Ionicons>["name"]; // Identificador del icono (bank, wallet, credit-card)
-  is_active: boolean; // Si la cuenta está activa
+  is_active: 1 | 0; // Si la cuenta está activa
   created_at: string;
   updated_at: string;
 }
