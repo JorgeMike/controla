@@ -14,8 +14,10 @@ import {
 } from "@/constants/Currency";
 import { useBankAccounts } from "@/contexts/BankAccountsContext";
 import { useAppTheme } from "@/contexts/ThemeContext";
+import { useUser } from "@/contexts/UserContext";
 import { BankAccountService } from "@/database/modules/BankAccounts/bankAccountService";
 import { NewBankAccount } from "@/database/modules/BankAccounts/bankAccountsTypes";
+import { ColorName } from "@/types/theme/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -40,10 +42,12 @@ const bankAccountService = new BankAccountService();
 export default function AddAccountScreen() {
   const { theme } = useAppTheme() ?? "light";
   const { createAccount } = useBankAccounts();
+  const { user } = useUser();
   const [showModal, setShowModal] = useState(false);
   const [balanceInput, setBalanceInput] = useState<string>("");
   const [creatingAccount, setCreatingAccount] = useState(false);
   const [successCreation, setSuccessCreation] = useState<boolean | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const [formData, setFormData] = useState<NewBankAccount>({
@@ -55,8 +59,7 @@ export default function AddAccountScreen() {
     name: "",
     user_id: 1, // TODO: obtener del contexto de usuario
   });
-  const [selectedColor, setSelectedColor] =
-    useState<keyof typeof Colors.light>("purple");
+  const [selectedColor, setSelectedColor] = useState<ColorName>("purple");
   const [selectedIcon, setSelectedIcon] =
     useState<React.ComponentProps<typeof Ionicons>["name"]>("wallet");
 
@@ -113,10 +116,16 @@ export default function AddAccountScreen() {
   };
 
   const handleConfirm = async () => {
+    if (!user) {
+      setError("User not found. Please log in again.");
+      return;
+    }
+
     const completeData: NewBankAccount = {
       ...formData,
       color: selectedColor,
       icon: selectedIcon,
+      user_id: user?.id || 1,
     };
     setCreatingAccount(true);
 
@@ -126,6 +135,7 @@ export default function AddAccountScreen() {
       setCreatingAccount(false);
       setSuccessCreation(true);
     } catch (error) {
+      setError("Error creating account: " + (error as Error).message);
       setSuccessCreation(false);
     } finally {
       setCreatingAccount(false);
@@ -141,6 +151,18 @@ export default function AddAccountScreen() {
         }}
       >
         <ScrollView showsVerticalScrollIndicator={false}>
+          {error && (
+            <Text
+              style={{
+                backgroundColor: Colors[theme].error + "20",
+                color: Colors[theme].error,
+                textAlign: "center",
+                marginTop: 16,
+              }}
+            >
+              {error}
+            </Text>
+          )}
           <Container>
             <Input
               label="Nombre de la cuenta"
@@ -292,7 +314,7 @@ export default function AddAccountScreen() {
                   theme={theme}
                   title={formData.name || "Nombre de la cuenta"}
                   iconName={selectedIcon}
-                  iconColor={Colors[theme].green}
+                  iconColor={Colors[theme][selectedColor]}
                   style={{
                     marginBottom: 24,
                     borderColor: Colors[theme].border,

@@ -125,6 +125,7 @@ function RootLayoutNav() {
               headerShadowVisible: false,
             }}
           />
+
           <Stack.Screen
             name="add-expense"
             options={{

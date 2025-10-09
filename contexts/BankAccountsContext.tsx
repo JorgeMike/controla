@@ -65,7 +65,7 @@ export function BankAccountsProvider({
       loadAccounts();
     } catch (error) {
       console.error("Error creating bank account:", error);
-      setError("Failed to create bank account.");
+      throw error;
     }
   };
 

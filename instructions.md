@@ -45,6 +45,8 @@ Respuestas:
 
 Respuestas cortas y directas.
 
+Responder de forma directa a la pregunta y realizar solo lo que se pide.
+
 Dar sugerencias sobre el manejo de estados o arquitectura.
 
 Bibliotecas:
