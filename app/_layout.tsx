@@ -18,6 +18,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -84,6 +85,7 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
   const { theme } = useAppTheme();
 
@@ -105,11 +107,18 @@ function RootLayoutNav() {
       value={theme === "dark" ? DarkTheme : DefaultTheme}
     >
       <GestureHandlerRootView
-        style={{ flex: 1, backgroundColor: Colors[theme].background }}
+        style={{
+          flex: 1,
+          backgroundColor: Colors[theme].background,
+        }}
       >
         <Stack
           screenOptions={{
             headerShown: false,
+            contentStyle: {
+              marginTop: insets.top,
+              marginBottom: insets.bottom,
+            },
           }}
         >
           <Stack.Screen name="onboarding" />
@@ -123,14 +132,6 @@ function RootLayoutNav() {
               headerShown: true,
               headerTitle: "Perfil",
               headerShadowVisible: false,
-            }}
-          />
-
-          <Stack.Screen
-            name="add-expense"
-            options={{
-              headerShown: true,
-              headerTitle: "Agregar Gasto",
             }}
           />
         </Stack>

@@ -8,10 +8,8 @@ import { useUser } from "@/contexts/UserContext";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
-  const insets = useSafeAreaInsets();
   const { theme } = useAppTheme();
   const { user } = useUser();
 
@@ -25,8 +23,6 @@ export default function ProfileScreen() {
       }}
       contentContainerStyle={{
         flexGrow: 1,
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
       }}
       showsVerticalScrollIndicator={false}
     >

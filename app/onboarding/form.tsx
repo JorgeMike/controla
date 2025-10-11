@@ -292,14 +292,12 @@ export default function OnboardingFormScreen() {
       style={[
         styles.container,
         {
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom,
           backgroundColor: Colors[theme].background,
         },
       ]}
     >
       {/* Indicador de progreso */}
-      <View style={[styles.progressContainer, { top: insets.top + 20 }]}>
+      <View style={[styles.progressContainer]}>
         <View style={styles.progressBar}>
           <View
             style={[

@@ -7,10 +7,8 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 import Colors from "@/constants/Colors";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { useUser } from "@/contexts/UserContext";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabTwoScreen() {
-  const insets = useSafeAreaInsets();
   const { theme } = useAppTheme();
   const { user, isLoading: isLoadingUser } = useUser();
 
@@ -22,8 +20,6 @@ export default function TabTwoScreen() {
       }}
       contentContainerStyle={{
         flexGrow: 1,
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
       }}
       showsVerticalScrollIndicator={false}
     >

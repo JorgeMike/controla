@@ -83,8 +83,6 @@ export default function OnboardingScreen() {
       style={[
         styles.container,
         {
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom,
           backgroundColor: Colors[theme].background,
         },
       ]}

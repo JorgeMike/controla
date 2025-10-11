@@ -1,7 +1,13 @@
 import Colors from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import { Text } from "../Themed";
 
 interface InputProps {
@@ -13,6 +19,8 @@ interface InputProps {
   keyboardType?: React.ComponentProps<typeof TextInput>["keyboardType"];
   autoCapitalize?: React.ComponentProps<typeof TextInput>["autoCapitalize"];
   theme?: "light" | "dark";
+  style?: ViewStyle;
+  inputStyle?: TextStyle;
 }
 
 export default function Input({
@@ -24,11 +32,13 @@ export default function Input({
   keyboardType = "default",
   autoCapitalize = "none",
   theme = "light",
+  style,
+  inputStyle,
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Text type="label" style={{ color: Colors[theme].text }}>
         {label}
       </Text>
@@ -63,6 +73,7 @@ export default function Input({
             styles.input,
             iconName && styles.inputWithIcon,
             { color: Colors[theme].inputText },
+            inputStyle,
           ]}
           placeholderTextColor={Colors[theme].placeholder}
           keyboardType={keyboardType}

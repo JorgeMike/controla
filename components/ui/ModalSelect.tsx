@@ -1,4 +1,5 @@
 import Colors from "@/constants/Colors";
+import { IoniconsName } from "@/database/modules/BankAccounts/bankAccountsTypes";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
@@ -15,7 +16,7 @@ import { Text } from "../Themed";
 export interface ModalSelectOption<T extends string | number = string> {
   label: string;
   value: T;
-  icon?: React.ComponentProps<typeof Ionicons>["name"];
+  icon?: IoniconsName;
 }
 
 interface ModalSelectProps<T extends string | number = string> {
@@ -25,7 +26,7 @@ interface ModalSelectProps<T extends string | number = string> {
   onValueChange: (value: T) => void;
   placeholder?: string;
   label?: string;
-  iconName?: React.ComponentProps<typeof Ionicons>["name"];
+  iconName?: IoniconsName;
 }
 
 export default function ModalSelect<T extends string | number = string>({

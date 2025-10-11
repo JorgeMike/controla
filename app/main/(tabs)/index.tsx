@@ -13,10 +13,8 @@ import Colors from "@/constants/Colors";
 import { useBankAccounts } from "@/contexts/BankAccountsContext";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { useUser } from "@/contexts/UserContext";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const insets = useSafeAreaInsets();
   const { theme } = useAppTheme() ?? "light";
   const { user, isLoading: isLoadingUser } = useUser();
   const { accounts, isLoading: isLoadingAccounts } = useBankAccounts();
@@ -30,7 +28,7 @@ export default function HomeScreen() {
   if (accounts.length === 0) {
     return (
       <RNView style={{ flex: 1, backgroundColor: Colors[theme].background }}>
-        <Container style={{ paddingTop: insets.top }}>
+        <Container>
           <Header theme={theme} image={user?.profile_image} />
           <Greetings name={user?.name.split(" ")[0]} />
         </Container>
@@ -73,8 +71,6 @@ export default function HomeScreen() {
       }}
       contentContainerStyle={{
         flexGrow: 1,
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
         backgroundColor: Colors[theme].background,
       }}
       showsVerticalScrollIndicator={false}

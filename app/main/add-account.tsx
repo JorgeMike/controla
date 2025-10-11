@@ -16,7 +16,10 @@ import { useBankAccounts } from "@/contexts/BankAccountsContext";
 import { useAppTheme } from "@/contexts/ThemeContext";
 import { useUser } from "@/contexts/UserContext";
 import { BankAccountService } from "@/database/modules/BankAccounts/bankAccountService";
-import { NewBankAccount } from "@/database/modules/BankAccounts/bankAccountsTypes";
+import {
+  IoniconsName,
+  NewBankAccount,
+} from "@/database/modules/BankAccounts/bankAccountsTypes";
 import { ColorName } from "@/types/theme/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -24,7 +27,7 @@ import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { Modal, PaperProvider, Portal } from "react-native-paper";
 
-const bankIcons: React.ComponentProps<typeof Ionicons>["name"][] = [
+const bankIcons: IoniconsName[] = [
   "card",
   "card-outline",
   "wallet",
@@ -40,16 +43,24 @@ const bankIcons: React.ComponentProps<typeof Ionicons>["name"][] = [
 const bankAccountService = new BankAccountService();
 
 export default function AddAccountScreen() {
+  // hooks
   const { theme } = useAppTheme() ?? "light";
   const { createAccount } = useBankAccounts();
   const { user } = useUser();
-  const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
+
+  // auxiliary states for form
   const [balanceInput, setBalanceInput] = useState<string>("");
+  const [selectedColor, setSelectedColor] = useState<ColorName>("purple");
+  const [selectedIcon, setSelectedIcon] = useState<IoniconsName>("wallet");
+
+  // system states
+  const [showModal, setShowModal] = useState(false);
   const [creatingAccount, setCreatingAccount] = useState(false);
   const [successCreation, setSuccessCreation] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
+  // form state
   const [formData, setFormData] = useState<NewBankAccount>({
     currency: "USD",
     currency_symbol: "$",
@@ -57,11 +68,8 @@ export default function AddAccountScreen() {
     current_balance: 0,
     is_active: 1,
     name: "",
-    user_id: 1, // TODO: obtener del contexto de usuario
+    user_id: 1,
   });
-  const [selectedColor, setSelectedColor] = useState<ColorName>("purple");
-  const [selectedIcon, setSelectedIcon] =
-    useState<React.ComponentProps<typeof Ionicons>["name"]>("wallet");
 
   const handleNameChange = (text: string) => {
     setFormData((prev) => ({ ...prev, name: text }));
@@ -232,7 +240,7 @@ export default function AddAccountScreen() {
               styles.modalContainer,
               {
                 backgroundColor: Colors[theme].surface,
-                borderWidth: 2,
+                borderWidth: 1,
                 borderColor: Colors[theme].border,
               },
             ]}

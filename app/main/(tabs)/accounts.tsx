@@ -34,15 +34,11 @@ export default function TabTwoScreen() {
     bottomSheetRef.current?.expand();
   }, []);
 
-  const handleCloseBottomSheet = useCallback(() => {
-    bottomSheetRef.current?.close();
-  }, []);
-
   // Empty State: usuario sin cuentas
   if (accounts.length === 0) {
     return (
       <View style={{ flex: 1, backgroundColor: Colors[theme].background }}>
-        <Container style={{ paddingTop: insets.top }}>
+        <Container>
           <Header theme={theme} image={user?.profile_image} />
           <RNView
             style={{
@@ -81,8 +77,6 @@ export default function TabTwoScreen() {
         }}
         contentContainerStyle={{
           flexGrow: 1,
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom,
         }}
         showsVerticalScrollIndicator={false}
       >

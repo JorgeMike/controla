@@ -1,8 +1,10 @@
+export type TransactionType = "income" | "expense" | "reimbursement";
+
 export interface Transaction {
   id: number;
   user_id: number;
   bank_account_id: number;
-  type: "income" | "expense" | "reimbursement";
+  type: TransactionType;
   amount: number;
   category: string; // Comida, Transporte, Salario, etc.
   description?: string;

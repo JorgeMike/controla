@@ -1,12 +1,14 @@
 import Container from "@/components/Container";
 import Colors from "@/constants/Colors";
 import { useAppTheme } from "@/contexts/ThemeContext";
+import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet } from "react-native";
 import { View } from "./Themed";
 import Actionbutton from "./ui/ActionButton";
 
 export default function ExpenseIncomeSummary() {
+  const router = useRouter();
   const { theme } = useAppTheme() ?? "light";
 
   return (
@@ -18,7 +20,7 @@ export default function ExpenseIncomeSummary() {
         theme={theme}
         iconColor={Colors[theme].orange}
         onPress={() => {
-          console.log("Agregar Gastos");
+          router.push("/main/add-expense");
         }}
       />
 

@@ -26,6 +26,17 @@ export default function RootLayout() {
             },
           }}
         />
+        <Stack.Screen
+          name="add-expense"
+          options={{
+            headerShown: true,
+            headerTitle: "Agregar Gasto",
+            headerShadowVisible: false,
+            headerStyle: {
+              backgroundColor: Colors[theme].background,
+            },
+          }}
+        />
       </Stack>
     </BankAccountsProvider>
   );
